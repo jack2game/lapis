@@ -888,3 +888,7 @@ ol li[data-details="新和英"] details.glossary-text__details .glossary-text__s
     list-style-type : none;
     padding-inline-start: 0;
 }
+
+/* #s2 { */
+/*     display: none !important; */
+/* } */
