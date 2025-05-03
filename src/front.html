@@ -95,6 +95,22 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         });
     }
 
+    function cleanWord(word = '{{text:kanji:Expression}}') {
+        return word.replace(/\[[^\]]*\]|\([^)]*\)|[0-9!@#$%^&*()_+\-='":\\|,.<>/?~～〜\s]+/g, '')
+    }
+
+    function autoCopyWord() {
+        setTimeout(async () => {
+            try {
+                await navigator.clipboard.writeText(cleanWord())
+            } catch (err) {
+                console.error(err)
+            }
+        }, 0)
+    }
+
+    autoCopyWord();
+
     function initialize() {
         // Check what card type it is
         if (`{{IsClickCard}}`) ClickCard();
