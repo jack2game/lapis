@@ -95,11 +95,33 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         });
     }
 
+    function CONFIG() {
+        return {
+            settings: {
+                autoCopy: {
+                    ipad: true,
+                    iphone: true,
+                    ankiweb: false,
+                }
+            }
+        };
+    }
+
+    function isAnkiWeb() {
+        return !!document.getElementById('quiz')
+    }
+
+    function getDevice() {
+        if (isAnkiWeb()) return 'ankiweb';
+        return ['iphone','ipad'].find(d => document.documentElement.classList.contains(d)) || 'other';
+    }
+
     function cleanWord(word = '{{text:kanji:Expression}}') {
         return word.replace(/\[[^\]]*\]|\([^)]*\)|[0-9!@#$%^&*()_+\-='":\\|,.<>/?~～〜\s]+/g, '')
     }
 
     function autoCopyWord() {
+        if (!CONFIG().settings.autoCopy[getDevice()]) return
         setTimeout(async () => {
             try {
                 await navigator.clipboard.writeText(cleanWord())
