@@ -25,7 +25,7 @@
     --pc-vocab-font-size: 85px;
     --pc-back-vocab-font-size: 60px;
     --pc-sentence-font-size: 52px;
-    --pc-back-sentence-font-size: 28px;
+    --pc-back-sentence-font-size: 35px;
     --pc-hint-font-size: 38px;
     --pc-info-font-size: 23px;
 
@@ -35,7 +35,7 @@
     --mobile-vocab-font-size: 70px;
     --mobile-back-vocab-font-size: 32px;
     --mobile-sentence-font-size: 38px;
-    --mobile-back-sentence-font-size: 20px;
+    --mobile-back-sentence-font-size: 24px;
     --mobile-hint-font-size: 24px;
     --mobile-info-font-size: 16px;
 
@@ -185,7 +185,6 @@ html.mobile {
     font-size: var(--sentence-font-size);
     display: inline-block;
     line-height: 1.5;
-    text-align: left;
 }
 
 #hint {
@@ -483,7 +482,6 @@ header {
     display: inline-block;
     width: calc(100% - 20px);
     max-width: var(--max-width);
-    text-align: left;
 }
 
 .sentence-mobile {
@@ -500,7 +498,6 @@ header {
     display: inline-block;
     width: calc(100% - 20px);
     max-width: var(--max-width);
-    text-align: left;
 }
 
 /* Footer */
@@ -891,7 +888,3 @@ ol li[data-details="新和英"] details.glossary-text__details .glossary-text__s
     list-style-type : none;
     padding-inline-start: 0;
 }
-
-/* #s2 { */
-/*     display: none !important; */
-/* } */
