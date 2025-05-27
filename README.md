@@ -4,7 +4,7 @@ An advanced yet lightweight [Anki](https://apps.ankiweb.net/) notetype, thoughtf
 
 <div align="center">
   <img src="https://github.com/donkuri/lapis/raw/main/assets/Lapis.gif" alt="Click cards with Lapis">
-  <p><em>Click cards with Lapis</em></p>
+  <p><em>Click cards with Lapis. You can click on the edges of the definition blockquote to traverse your dictionaries, hover over the sentence to show furigana, and hover over the top right to see frequency information.</em></p>
 </div>
 
 ### Table of Contents
@@ -21,13 +21,13 @@ An advanced yet lightweight [Anki](https://apps.ankiweb.net/) notetype, thoughtf
     - [How do I set up sentence furigana?](#how-do-i-set-up-sentence-furigana)
     - [How do I switch from JPMN to Lapis?](#how-do-i-switch-from-jpmn-to-lapis)
     - [How do I use the various card types?](#how-do-i-use-the-various-card-types)
+    - [How do I see all my definitions?](#how-do-i-see-all-my-definitions)
     - [What does `Hint` do?](#what-does-hint-do)
     - [Why three different fields for definitions?](#why-three-different-fields-for-definitions)
     - [Will this work with tools like JL?](#will-this-work-with-tools-like-jl)
     - [How does tagging work in Lapis?](#how-does-tagging-work-in-lapis)
     - [How do I add additional info to the card?](#how-do-i-add-additional-info-to-the-card)
     - [Does Lapis support frequency sorting?](#does-lapis-support-frequency-sorting)
-    - [How can I change the bold color in click cards?](#how-can-i-change-the-bold-color-in-click-cards)
     - [How can I change the font size?](#how-can-i-change-the-font-size)
     - [How can I change the fonts used?](#how-can-i-change-the-fonts-used)
     - [How can I change the bold color?](#how-can-i-change-the-bold-color)
@@ -67,7 +67,7 @@ At the same time, another great notetype caught our eyes, [rudnam](https://githu
 To use Lapis, first download the example deck from [Releases](https://github.com/donkuri/lapis/releases). From there, you need to change your fields settings in Yomitan. Start by selecting `Lapis` as the `Model` in Yomitan's `Configure Anki Card Format`. Here is how your fields should be set up:
 
 | Field                 | Value                                                                                                                                                      |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Expression            | `{expression}`                                                                                                                                             |
 | ExpressionFurigana    | `{furigana-plain}`                                                                                                                                         |
 | ExpressionReading     | `{reading}`                                                                                                                                                |
@@ -83,6 +83,7 @@ To use Lapis, first download the example deck from [Releases](https://github.com
 | IsWordAndSentenceCard |                                                                                                                                                            |
 | IsClickCard           |                                                                                                                                                            |
 | IsSentenceCard        |                                                                                                                                                            |
+| IsAudioCard           |                                                                                                                                                            |
 | PitchPosition         | `{pitch-accent-positions}`                                                                                                                                 |
 | PitchCategories       | `{pitch-accent-categories}`                                                                                                                                |
 | Frequency             | `{frequencies}`                                                                                                                                            |
@@ -122,6 +123,13 @@ The `is...Card` fields let you select the kind of card you want to use by placin
 | IsWordAndSentenceCard | Displays the `Sentence` field as a hint below the word on the front.  |
 | isClickCard           | Makes the word in the front of the card clickable to get the sentence |
 | isSentenceCard        | The full sentence appears in the front instead of only the word       |
+| isAudioCard           | Plays the sentence audio and shows the sentence with the word missing |
+
+When using audio cards, make sure to populate your sentence audio. It falls back to the word audio, however it will be inaccurate if it's conjugated.
+
+### How do I see all my definitions?
+
+To navigate through all of your definitions, you can click on the left and right edges of the definition box/blockquote. As demonstrated in the GIF at the start, the definitions, *provided your setup is correct*, will be organized into three distinct fields. You can learn more about this structural choice [here](#why-three-different-fields-for-definitions).
 
 ### What does `Hint` do?
 
@@ -147,8 +155,8 @@ You can read the full explanation [here](https://animecards.site/ankicards/#the-
 This is partly inspired by JPMN and its method of organizing dictionaries. There are three main fields:
 
 - `SelectionText` – Use this when you want to highlight a specific sentence or definition from the Yomitan popup. If you don’t need to highlight anything, just leave it empty, it won’t affect the notetype.
-- `MainDefinition` – This is where you input the main dictionary you prefer. I highly recommend filling this in. If you're new to Japanese or mining on your own, it’s a good idea to start with a bilingual dictionary like JMDict/Jitendex. Alternatively, you can use your preferred monolingual dictionaries (such as 三省堂, 大辞林, 大辞泉...) by selecting them when configuring Yomitan. **Please note, the dictionaries need to be installed in Yomitan before they can be selected.**
-- `Glossary` – This is where you place all of your dictionary definitions. We recommend having more than a single dictionary, see [here](https://donkuri.github.io/learn-japanese/setup/#adding-dictionaries). **If you choose to use only a single dictionary, make sure it is selected in `MainDefinition` and leave this field EMPTY to avoid a known bug.**
+- `MainDefinition` – This is where you input the main dictionary you prefer. I highly recommend filling this in. If you're new to Japanese or mining on your own, it’s a good idea to start with a bilingual dictionary like [JMDict](https://github.com/yomidevs/jmdict-yomitan). Alternatively, you can use your preferred monolingual dictionaries (such as 三省堂, 大辞林, 大辞泉...) by selecting them when configuring Yomitan. **Please note, the dictionaries need to be installed in Yomitan before they can be selected.**
+- `Glossary` – This is where you place all of your dictionary definitions. We recommend having more than a single dictionary, see [here](https://donkuri.github.io/learn-japanese/setup/#adding-dictionaries).
 
 ### Will this work with tools like JL?
 
@@ -166,16 +174,6 @@ You can use the `MiscInfo` field to add any extra information you'd like. It wil
 ### Does Lapis support frequency sorting?
 
 Yes, using the `FreqSort` field. For an explanation of what frequency sorting is, read [this](https://donkuri.github.io/learn-japanese/mining/#using-frequency-sorting). Basically, for each card `{frequency-harmonic-rank}` computes the [harmonic mean](https://en.wikipedia.org/wiki/Harmonic_mean) of all the frequencies on that card. It is often used when working with ratios and it approaches what the word's _true frequency_ looks like. That is what gets added to `FreqSort` and that is what you need to order by.
-
-### How can I change the bold color in click cards?
-
-If you do not like the bold colors (for instance grey for dark theme), you can change them under `Styling`, under the section `/* Bold colors */`. For instance, if you want a light yellow similar to JPMN, you can use the following:
-
-```css
-  /* Bold color */
-    --light-mode-bold: #999999;
-    --dark-mode-bold: #f0e67f;
-```
 
 ### How can I change the font size?
 
@@ -219,11 +217,11 @@ You can replace these with any fonts you prefer, or leave them as is to use the 
 
 ### How can I change the bold color?
 
-The default bold color is gray if no pitch accent coloring is available. If you want to change that color, open the `Styling` section of any Lapis card in Anki by going to `Browse`, then select any Lapis card and click on `Cards`  (top-left of the card editor). In the `Styling` section, look for the part labeled `/* Bold color */` and you will see this:
+These are the default bold colors if no pitch accent coloring is available. If you want to change that color, open the `Styling` section of any Lapis card in Anki by going to `Browse`, then select any Lapis card and click on `Cards`  (top-left of the card editor). In the `Styling` section, look for the part labeled `/* Bold color */` and you will see this:
 ```css
 /* Bold color */
---light-mode-bold: #999999;
---dark-mode-bold: #7d8590;
+--light-mode-bold: #4660f1;
+--dark-mode-bold: #fffd9e;
 ```
 Change the hexcode to whatever color you want by inputting the hexcode corresponding to that color. You can find [hexcode selectors](https://htmlcolorcodes.com/) online if you would like a color picker to easily choose from.
 
