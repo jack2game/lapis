@@ -587,6 +587,7 @@ main {
     line-height: 1.5;
     font-size: var(--back-sentence-font-size);
     display: inline-block;
+    text-align: left;
 
     /* show furigana on hover */
     & rt {
