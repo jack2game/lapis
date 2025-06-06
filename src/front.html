@@ -30,129 +30,94 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
 <!---------- Header ------------->
 <header style="visibility: hidden"></header>
 
-<main lang="ja">
-    <!--------- Vocab card ---------->
-    {{^IsSentenceCard}} {{^IsWordAndSentenceCard}} {{^IsClickCard}} {{^IsAudioCard}}
+<main lang="ja" style="width: 100%; !important;">
+  <!--------- Vocab card ---------->
+  {{^IsSentenceCard}} {{^IsWordAndSentenceCard}} {{^IsClickCard}}
+  {{^IsAudioCard}}
+  <div lang="ja" class="front-vocab">{{Expression}}</div>
+  {{/IsAudioCard}} {{/IsClickCard}} {{/IsWordAndSentenceCard}}
+  {{/IsSentenceCard}}
+
+  <!------- Sentence card --------->
+  {{#IsSentenceCard}}
+  <div lang="ja" class="front-sentence">
+    {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
+    {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+  </div>
+  {{/IsSentenceCard}}
+
+  <!--------- Word And Sentence card ----------->
+  {{#IsWordAndSentenceCard}}
+  <div lang="ja" class="front-vocab">{{Expression}}</div>
+  <div lang="ja" id="hint">
+    {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
+    {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+  </div>
+  {{/IsWordAndSentenceCard}}
+
+  <!-------- Click card ----------->
+  {{#IsClickCard}}
+  <div id="click" class="tappable">
     <div lang="ja" class="front-vocab">{{Expression}}</div>
-    {{/IsAudioCard}} {{/IsClickCard}} {{/IsWordAndSentenceCard}} {{/IsSentenceCard}}
+  </div>
+  {{/IsClickCard}}
 
-    <!------- Sentence card --------->
-    {{#IsSentenceCard}}
-    <div lang="ja" class="front-sentence">
-        {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-        {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+  <!-------- Audio card ----------->
+  {{#IsAudioCard}}
+  <div id="audio">
+    <div lang="ja" class="front-sentence">{{Sentence}}</div>
+    <div>
+      {{#SentenceAudio}}{{SentenceAudio}}{{/SentenceAudio}}
+      {{^SentenceAudio}}{{ExpressionAudio}}{{/SentenceAudio}}
     </div>
-    {{/IsSentenceCard}}
+  </div>
+  {{/IsAudioCard}}
 
-    <!--------- Word And Sentence card ----------->
-    {{#IsWordAndSentenceCard}}
-    <div lang="ja" class="front-vocab">{{Expression}}</div>
-    <div lang="ja" id="hint">
-        {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-        {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
-    </div>
-    {{/IsWordAndSentenceCard}}
-
-    <!-------- Click card ----------->
-    {{#IsClickCard}}
-    <div id="click" class="tappable">
-        <div lang="ja" class="front-vocab">{{Expression}}</div>
-    </div>
-    {{/IsClickCard}}
-
-    <!-------- Audio card ----------->
-    {{#IsAudioCard}}
-    <div id="audio">
-        <div lang="ja" class="front-sentence">{{Sentence}}</div>
-        <div>
-            {{#SentenceAudio}}{{SentenceAudio}}{{/SentenceAudio}}
-            {{^SentenceAudio}}{{ExpressionAudio}}{{/SentenceAudio}}
-        </div>
-    </div>
-    {{/IsAudioCard}}
-
-    <!-- Hint -->
-    {{#Hint}}
-    <div id="hint">{{Hint}}</div>
-    {{/Hint}}
+  <!-- Hint -->
+  {{#Hint}}
+  <div id="hint">{{Hint}}</div>
+  {{/Hint}}
 </main>
 
 <script>
-    function ClickCard() {
-        const clickElement = document.getElementById('click');
+  function ClickCard() {
+    const clickElement = document.getElementById("click");
 
-        // Store original content so that we can click back to it
-        const originalContent = clickElement.innerHTML;
+    // Store original content so that we can click back to it
+    const originalContent = clickElement.innerHTML;
 
-        // This is what it is going to click to
-        const clickedContent = `
+    // This is what it is going to click to
+    const clickedContent = `
             <div lang="ja" class="front-sentence">
             {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
             {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
             </div>
         `;
 
-        function toggleContent() {
-            if (clickElement.innerHTML === originalContent) {
-                clickElement.innerHTML = clickedContent;
-            } else {
-                clickElement.innerHTML = originalContent;
-            }
-        }
-        // Implement the clicking mechanism
-        clickElement.addEventListener('click', (e) => toggleContent());
-        document.addEventListener('keydown', (e) => {
-            if (event.key === 'c' | event.key === 'C') toggleContent();
-        });
+    function toggleContent() {
+      if (clickElement.innerHTML === originalContent) {
+        clickElement.innerHTML = clickedContent;
+      } else {
+        clickElement.innerHTML = originalContent;
+      }
     }
+    // Implement the clicking mechanism
+    clickElement.addEventListener("click", (e) => toggleContent());
+    document.addEventListener("keydown", (e) => {
+      if ((event.key === "c") | (event.key === "C")) toggleContent();
+    });
+  }
 
-    function CONFIG() {
-        return {
-            settings: {
-                autoCopy: {
-                    ipad: true,
-                    iphone: true,
-                    ankiweb: false,
-                }
-            }
-        };
-    }
+  function HideTargetWord() {
+    const targetWords = document.querySelectorAll("#audio b");
+    targetWords.forEach((word) => (word.innerText = "[...]"));
+  }
 
-    function isAnkiWeb() {
-        return !!document.getElementById('quiz')
-    }
+  function initialize() {
+    // Check what card type it is
+    if (`{{IsClickCard}}`) ClickCard();
+    if (`{{IsAudioCard}}`) HideTargetWord();
+  }
 
-    function getDevice() {
-        if (isAnkiWeb()) return 'ankiweb';
-        return ['iphone','ipad'].find(d => document.documentElement.classList.contains(d)) || 'other';
-    }
-
-    function cleanWord(word = '{{text:kanji:Expression}}') {
-        return word.replace(/\[[^\]]*\]|\([^)]*\)|[0-9!@#$%^&*()_+\-='":\\|,.<>/?~～〜\s]+/g, '')
-    }
-
-    function autoCopyWord() {
-        if (!CONFIG().settings.autoCopy[getDevice()]) return
-        setTimeout(async () => {
-            try {
-                await navigator.clipboard.writeText(cleanWord())
-            } catch (err) {
-                console.error(err)
-            }
-        }, 0)
-    }
-
-    function HideTargetWord() {
-        const targetWords = document.querySelectorAll('#audio b');
-        targetWords.forEach(word => word.innerText = "[...]");
-    }
-
-    function initialize() {
-        // Check what card type it is
-        if (`{{IsClickCard}}`) ClickCard();
-        if (`{{IsAudioCard}}`) HideTargetWord();
-    }
-
-    initialize();
-    autoCopyWord();
+  initialize();
 </script>
