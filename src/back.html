@@ -157,8 +157,8 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     }
 
     function hasVerbOrAdjEnding() {
-        const endings = ["い", "う", "く", "す", "つ", "ぶ", "む", "る"];
-        return endings.some(ending => `{{Expression}}`.replace("</div>","").endsWith(ending));
+        const endings = ["い", "う", "く", "ぐ", "す", "つ", "ぶ", "む", "る"];
+        return endings.some(ending => `{{text:Expression}}`.endsWith(ending));
     }
 
     function getPitchType(pitchPosition) {
@@ -380,7 +380,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         // multiple dicts
         const primaryDicts = document.querySelectorAll("#primary li[data-dictionary]");
         const glossariesDicts = document.querySelectorAll("#glossaries li[data-dictionary]");
-        return primaryDicts.length === glossariesDicts.length
+        return primaryDicts.length === glossariesDicts.length;
     }
 
     // Removes Unnecessary definitions
@@ -527,7 +527,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     function setDHHeight() {
         var dhLeft = document.querySelector('.dh-left');
         var dhRight = document.querySelector('.dh-right .image img');
-        var defHeader = document.querySelector('.def-header')
+        var defHeader = document.querySelector('.def-header');
 
         if (dhLeft && dhRight) {
             var dhLeftHeight = dhLeft.offsetHeight;
@@ -568,7 +568,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     }
 
     function userSettings() {
-        const oldSettings = document.querySelector("body > settings");
+        const oldSettings = document.querySelector("settings");
         // Needed to give user instant feedback on their changes
         oldSettings?.remove();
 
@@ -588,11 +588,12 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
             const value = getComputedStyle(document.documentElement).getPropertyValue(opt).trim();
             settings.setAttribute("data-" + opt.slice(2), value.slice(1, -1));
             if (opt === "--open-misc-info" && value === "\"on\"") {
-                const miscInfo = document.querySelector("details:has(.misc-info)")
+                const miscInfo = document.querySelector("details:has(.misc-info)");
                 if (miscInfo) miscInfo.open = true;
             }
         }
-        document.body.insertBefore(settings, document.getElementById("qa"));
+        const qa = document.getElementById("qa");
+        qa.parentElement.insertBefore(settings, qa);
     }
 
     // Initialize all functions!!!
