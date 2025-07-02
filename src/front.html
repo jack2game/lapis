@@ -40,19 +40,13 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
 
   <!------- Sentence card --------->
   {{#IsSentenceCard}}
-  <div lang="ja" class="front-sentence">
-    {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-    {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
-  </div>
+  <div lang="ja" class="front-sentence">{{kanji:Sentence}}</div>
   {{/IsSentenceCard}}
 
   <!--------- Word And Sentence card ----------->
   {{#IsWordAndSentenceCard}}
   <div lang="ja" class="front-vocab">{{Expression}}</div>
-  <div lang="ja" id="hint">
-    {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-    {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
-  </div>
+  <div lang="ja" id="hint">{{kanji:Sentence}}</div>
   {{/IsWordAndSentenceCard}}
 
   <!-------- Click card ----------->
@@ -65,7 +59,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
   <!-------- Audio card ----------->
   {{#IsAudioCard}}
   <div id="audio">
-    <div lang="ja" class="front-sentence">{{Sentence}}</div>
+    <div lang="ja" class="front-sentence">{{kanji:Sentence}}</div>
     <div>
       {{#SentenceAudio}}{{SentenceAudio}}{{/SentenceAudio}}
       {{^SentenceAudio}}{{ExpressionAudio}}{{/SentenceAudio}}
@@ -87,12 +81,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     const originalContent = clickElement.innerHTML;
 
     // This is what it is going to click to
-    const clickedContent = `
-            <div lang="ja" class="front-sentence">
-            {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-            {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
-            </div>
-        `;
+    const clickedContent = `<div lang="ja" class="front-sentence">{{kanji:Sentence}}</div>`;
 
     function toggleContent() {
       if (clickElement.innerHTML === originalContent) {
