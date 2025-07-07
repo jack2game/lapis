@@ -43,9 +43,9 @@
   --sentence-position: "above"; /* "above", "below" the definition box*/
   --mobile-sentence-position: "below";
   --mobile-audio-buttons: "default"; /* "default", "header" (inside vocabulary box) */
-  --nsfw-blur-contained: "off"; /* "on", "off" */
+  --nsfw-blur-contained: "on"; /* "on", "off" */
   --open-misc-info: "off"; /* "on", "off" */
-  --glossary-separator: "off"; /* "on" to separate dictionaries in definition box */
+  --glossary-separator: "on"; /* "on" to separate dictionaries in definition box */
   --jitendex-format: "full"; /* "minimal" or space-separated list of "no-tags", "no-sentence", "no-forms", "no-xref", "no-img" */
 
   /* Pitch colors */
