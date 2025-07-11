@@ -609,5 +609,41 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         userSettings();
     }
 
+    function togglePopup() {
+        const modalBg = document.querySelector('.modal-bg');
+        if (!modalBg) return;
+        // If popup is active, close it
+        if (modalBg.classList.contains('active')) {
+            modalBg.click();
+        } else {
+            // Otherwise, open via first image
+            const img = document.querySelector('.image img, .def-image img');
+            if (img) img.click();
+        }
+    }
+
+    function pollGamepad() {
+        const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+        if (gamepads[0]) {
+            const gp = gamepads[0];
+            // on initial press only
+            if (gp.buttons[4].pressed && !prevButtonStates[4]) { // Left Bumper
+                togglePopup();
+            }
+            if (gp.buttons[5].pressed && !prevButtonStates[5]) { // Right Bumper
+                changeIndex(1);
+            }
+            // update previous button states
+            prevButtonStates = gp.buttons.map(b => b.pressed);
+        }
+        requestAnimationFrame(pollGamepad);
+    }
+
+    window.addEventListener('gamepadconnected', (e) => {
+        // Initialize previous states for all buttons
+        prevButtonStates = new Array(e.gamepad.buttons.length).fill(false);
+        pollGamepad();
+    });
+
     initialize();
 </script>
