@@ -609,6 +609,8 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         userSettings();
     }
 
+    let prevButtonStates = [];
+
     function togglePopup() {
         const modalBg = document.querySelector('.modal-bg');
         if (!modalBg) return;
@@ -627,10 +629,10 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         if (gamepads[0]) {
             const gp = gamepads[0];
             // on initial press only
-            if (gp.buttons[4].pressed && !prevButtonStates[4]) { // Left Bumper
+            if (gp.buttons[4].pressed && !prevButtonStates[4]) { // Left Bumper, change button by checking https://w3c.github.io/gamepad/#remapping
                 togglePopup();
             }
-            if (gp.buttons[5].pressed && !prevButtonStates[5]) { // Right Bumper
+            if (gp.buttons[5].pressed && !prevButtonStates[5]) { // Right Bumper, change button by checking https://w3c.github.io/gamepad/#remapping
                 changeIndex(1);
             }
             // update previous button states
