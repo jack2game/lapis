@@ -182,8 +182,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     }
 
     function handlePitches() {
-        const pitchTags = document.querySelector("#pitch-tags");
-        const pitchPositions = pitchTags?.textContent.match(/^\d+|\d+\b|\d+(?=\w)/g).map(Number);
+        const pitchPositions = `{{text:PitchPosition}}`.match(/^\d+|\d+\b|\d+(?=\w)/g)?.map(Number);
         if (!pitchPositions) return;
 
         paintTargetWord(getPitchType(pitchPositions[0]));
