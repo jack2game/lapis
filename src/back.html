@@ -1,4 +1,4 @@
-<lapis id="lapis">
+<lapis id="lapis" lang="ja">
 <!---------- Header ------------->
     <header>
         <div class="top-container">
@@ -19,10 +19,10 @@
         </div>
     </header>
 
-    <main lang="ja">
+    <main>
         <!-- The first row (vocab box+picture) -->
         <div class="def-header">
-            <div class="dh-left">
+            <div class="dh-vocab">
                 <div class="vocab">
                     {{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}
                     {{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}
@@ -46,7 +46,7 @@
 
             <!-- Image -->
             {{#Picture}}
-            <div class="dh-right">
+            <div class="dh-image">
                 <div class="image tappable {{Tags}}">{{Picture}}</div>
             </div>
             {{/Picture}}
@@ -77,8 +77,8 @@
             </div>
         </div>
 
-        <!-- This is for the sentence that you see on mobile (positioned under definition), on Desktop, the sentence goes above the definition box, and this is hidden -->
-        <div class="sentence-mobile">
+        <!-- Alternative Sentence Position -->
+        <div class="sentence-alt">
             {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
             {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
         </div>
@@ -101,7 +101,7 @@
     </main>
 
     <!----------- Footer ------------->
-    <footer lang="ja">
+    <footer>
         <br>
         <div class="bot-container">
             {{#Tags}}
@@ -163,7 +163,7 @@
     // Show the color
     function paintTargetWord(pitchType) {
         const sentences = Array.from(
-            document.querySelectorAll(".sentence, .definition, .sentence-mobile"),
+            document.querySelectorAll(".sentence, .definition, .sentence-alt"),
         );
         for (const sentence of sentences) {
             for (const targetWord of sentence.getElementsByTagName("b")) {
@@ -495,16 +495,16 @@
         frequency.innerHTML = freqHtml;
     }
 
-    // Sets the height of dhLeft, dhRight, defHeader as a whole
+    // Sets the height of dhVocab, dhImage, defHeader as a whole
     function setDHHeight() {
-        var dhLeft = document.querySelector('.dh-left');
-        var dhRight = document.querySelector('.dh-right .image img');
+        var dhVocab = document.querySelector('.dh-vocab');
+        var dhImage = document.querySelector('.dh-image img');
         var defHeader = document.querySelector('.def-header');
 
-        if (dhLeft && dhRight) {
-            var dhLeftHeight = dhLeft.offsetHeight;
-            dhRight.style.maxHeight = `${dhLeftHeight}px`;
-            defHeader.style.maxHeight = `${dhLeftHeight}px`;
+        if (dhVocab && dhImage) {
+            var dhVocabHeight = dhVocab.offsetHeight;
+            dhImage.style.maxHeight = `${dhVocabHeight}px`;
+            defHeader.style.maxHeight = `${dhVocabHeight}px`;
         }
     }
 

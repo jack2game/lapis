@@ -600,7 +600,7 @@ main {
 
 /* Back sentence */
 .sentence,
-.sentence-mobile {
+.sentence-alt {
   line-height: 1.5;
   font-size: var(--back-sentence-font-size);
   display: inline-block;
@@ -616,7 +616,7 @@ main {
 }
 
 .mobile .sentence,
-html:not(.mobile) .sentence-mobile {
+html:not(.mobile) .sentence-alt {
   display: none;
 }
 
@@ -676,7 +676,7 @@ footer {
   gap: min(20px, 2vw);
 }
 
-.dh-left {
+.dh-vocab {
   /* left */
   background: var(--bg-elevated);
   padding: 0.52em;
@@ -685,24 +685,24 @@ footer {
   /* takes up all available space */
 }
 
-.dh-right {
+.dh-image {
   max-width: 400px;
   position: relative;
   font-size: 0;
   /* weird hack needed to make the image stay in line with the .def-header */
 }
 
-.mobile .dh-left {
+.mobile .dh-vocab {
   background: none;
   padding: 0em;
   border-radius: 0px;
 }
 
-.mobile .dh-left:has(~ .dh-right) {
+.mobile .dh-vocab:has(~ .dh-image) {
   max-width: 60vw;
 }
 
-.mobile .dh-right {
+.mobile .dh-image {
   max-width: 40vw;
 }
 
@@ -1077,22 +1077,22 @@ lapis[data-main-picture-position="left"] .def-header {
 }
 
 lapis[data-sentence-furigana="always"] .sentence rt,
-lapis[data-sentence-furigana="always"] .sentence-mobile rt {
+lapis[data-sentence-furigana="always"] .sentence-alt rt {
   visibility: visible;
 }
 
 lapis[data-sentence-furigana="off"] .sentence rt,
-lapis[data-sentence-furigana="off"] .sentence-mobile rt {
+lapis[data-sentence-furigana="off"] .sentence-alt rt {
   display: none;
 }
 
-html.mobile lapis[data-mobile-sentence-position="above"] .sentence-mobile,
+html.mobile lapis[data-mobile-sentence-position="above"] .sentence-alt,
 html:not(.mobile) lapis[data-sentence-position="below"] .sentence {
   display: none;
 }
 
 html.mobile lapis[data-mobile-sentence-position="above"] .sentence,
-html:not(.mobile) lapis[data-sentence-position="below"] .sentence-mobile {
+html:not(.mobile) lapis[data-sentence-position="below"] .sentence-alt {
   display: block;
 }
 
