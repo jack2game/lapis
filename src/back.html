@@ -1,5 +1,5 @@
 <lapis id="lapis" lang="ja">
-<!---------- Header ------------->
+    <!---------- Header ------------->
     <header>
         <div class="top-container">
             <!-- Show the frequency number -->
@@ -40,7 +40,7 @@
                     <span id="pitch-tags" class="tags"> {{PitchPosition}} </span>
                     {{/PitchPosition}}
                     <br />
-                    <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
+                    <div class="audio-buttons"></div>
                 </div>
             </div>
 
@@ -54,8 +54,10 @@
 
         <br>
         <div class="sentence">
+            {{#Picture}}<div class="image-alt tappable {{Tags}}">{{Picture}}</div>{{/Picture}}
             {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
             {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+            <div class="audio-buttons-alt"></div>
         </div>
 
         <!-- The entire definition box -->
@@ -76,11 +78,14 @@
                 <div id="glossaries" data-display-name="Glossaries">{{Glossary}}</div>
             </div>
         </div>
+        <br>
 
         <!-- Alternative Sentence Position -->
         <div class="sentence-alt">
+            {{#Picture}}<div class="image-alt tappable {{Tags}}">{{Picture}}</div>{{/Picture}}
             {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
             {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+            <div class="audio-buttons-alt"></div>
         </div>
 
         <!------- Image modal --------->
@@ -115,6 +120,12 @@
 
 <!----------- Scripts ------------>
 <script>
+    // Hack to add multiple buttons without Anki playing them multiple times
+    function addAudioButtons() {
+        const audioContainers = document.querySelectorAll(".audio-buttons, .audio-buttons-alt");
+        audioContainers.forEach(audio => audio.innerHTML = `{{ExpressionAudio}}{{SentenceAudio}}`);
+    }
+
     // This code is concerned with calculating the Pitch Accent and constructing the pitch accent graphs
     function isOdaka(pitchNumber) {
         const kana = `{{kana:ExpressionFurigana}}` || `{{ExpressionReading}}`;
@@ -548,8 +559,7 @@
             "--main-picture-position",
             "--sentence-furigana",
             "--sentence-position",
-            "--mobile-sentence-position",
-            "--mobile-audio-buttons",
+            "--audio-buttons",
             "--nsfw-blur-contained",
             "--open-misc-info",
             "--glossary-separator",
@@ -567,6 +577,7 @@
 
     // Initialize all functions!!!
     function initialize() {
+        addAudioButtons();
         splitTags();
         handlePitches();
         setUpDefToggle();

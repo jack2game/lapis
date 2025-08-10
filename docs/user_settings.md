@@ -7,11 +7,17 @@ Make sure you **don't forget** a _doublequote_ or a _semi-colon_ at the end of a
 
 # Settings breakdown
 
+Some of these settings have mobile version, allowing you to setup different layouts per platform.
+
 ### main-picture-position
 
-`"left"` to swap the picture and the vocabulary box.
-Valid values : `"left"`, `"right"`
-Default value : `"left"`
+Valid values : `"right"`, `"left"`, `"alt"`.
+Default value : `"right"`
+| values | behaviour |
+| ---------- | --------- |
+| `right` | Next to the vocab (default) |
+| `left` | Swaps vocab and picture |
+| `alt` | Outside of the header, next to the sentence |
 
 ### sentence-furigana
 
@@ -24,15 +30,18 @@ Default value : `"hover"`
 Displays the sentence above or below the definition box.
 Valid values : `"above"`, `"below"`
 Default value : `"above"`
+Default on mobile  : `"below"`
 
-### mobile-sentence-position
+### audio-buttons
 
-Same as above, but for mobile.
+Change the position of audio buttons
+Valid values : `"header`, `"fixed"`, `"alt"`
 
-### mobile-audio-buttons
-
-On mobile, audio play buttons are shown on the button left of the card. If you want a layout similar to desktop you can set this to `"header"`  
-Valid values : `"default"`, `"header"`
+| values | behaviour |
+| ---------- | --------- |
+| `header` | Next to the pitch |
+| `fixed` | In the bottom-left corner |
+| `alt` | Next to the sentence |
 
 ### nsfw-blur-contained
 
@@ -70,7 +79,18 @@ Default value : `"full"`
 
 Therefore, having `--jitendex-foramt: "no-forms no-sentence no-xref";` will hide forms, examples sentences and cross references.
 
+# Notable Settings
+
+You can achieve a layout similar to Lapis-modified with the following settings :
+```css
+--main-picture-position: "alt";
+--sentence-position: "below";
+--audio-buttons: "alt";
+--mobile-main-picture-position: "alt";
+--mobile-sentence-position: "below";
+--mobile-audio-buttons: "alt";
+```
+
 # Is that it ? How can I change xx or yy ?
 
 If you think you need to change something in the layout, and that it would also benefit other users of Lapis. We are open to suggestions, please open an issue.
-

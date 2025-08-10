@@ -37,16 +37,20 @@
   --def-picture-size: 200px;
   --max-width: 800px;
 
-  /* See https://github.com/donkuri/lapis/tree/main/docs/user_settings.md for an overview of these variables */
-  --main-picture-position: "right"; /* "right", "left" */
-  --sentence-furigana: "hover"; /* "hover", "always", "off" */
+  /* For an overview of these variables
+  See https://github.com/donkuri/lapis/tree/main/docs/user_settings.md */
+  --main-picture-position: "right"; /* "right", "left", "alt" */
   --sentence-position: "above"; /* "above", "below" the definition box*/
-  --mobile-sentence-position: "below";
-  --mobile-audio-buttons: "default"; /* "default", "header" (inside vocabulary box) */
+  --audio-buttons: "header"; /* "header", "fixed", "alt" */
+  --sentence-furigana: "hover"; /* "hover", "always", "off" */
   --nsfw-blur-contained: "off"; /* "on", "off" */
   --open-misc-info: "off"; /* "on", "off" */
   --glossary-separator: "off"; /* "on" to separate dictionaries in definition box */
   --jitendex-format: "full"; /* "minimal" or space-separated list of "no-tags", "no-sentence", "no-forms", "no-xref", "no-img" */
+
+  --mobile-main-picture-position: "right"; /* "left", "right", "alt" */
+  --mobile-sentence-position: "below";
+  --mobile-audio-buttons: "fixed"; /* "fixed", "header", "alt" */
 
   /* Pitch colors */
   --dark-mode-heiban: #39bae6;
@@ -193,9 +197,7 @@
   --skogo-gendai-mark: #888;
 }
 
-html.win,
-html.mac,
-html.linux:not(.android) {
+html {
   --main-font-size: var(--pc-main-font-size);
   --main-def-size: var(--pc-main-def-size);
   --vocab-font-size: var(--pc-vocab-font-size);
@@ -215,6 +217,9 @@ html.mobile {
   --back-sentence-font-size: var(--mobile-back-sentence-font-size);
   --hint-font-size: var(--mobile-hint-font-size);
   --info-font-size: var(--mobile-info-font-size);
+  --main-picture-position: var(--mobile-main-picture-position);
+  --sentence-position: var(--mobile-sentence-position);
+  --audio-buttons: var(--mobile-audio-buttons);
 }
 
 #lapis {
@@ -498,7 +503,7 @@ main {
 }
 
 /* Primary Image */
-.image img {
+.image img, .image-alt img {
   max-height: 400px;
   width: auto;
   border-radius: 5px;
@@ -506,7 +511,14 @@ main {
   transition: filter 0.3s;
 }
 
+.image-alt {
+    margin: auto;
+    max-width: 60%;
+    max-height: 30vh;
+}
+
 .image img:hover,
+.image-alt img:hover,
 .def-image img:hover {
   filter: brightness(var(--image-brightness));
 }
@@ -613,11 +625,6 @@ main {
   & ruby:hover rt {
     visibility: visible;
   }
-}
-
-.mobile .sentence,
-html:not(.mobile) .sentence-alt {
-  display: none;
 }
 
 /* Footer */
@@ -1068,14 +1075,48 @@ li[data-dictionary="旺文社 全訳古語辞典"] div[data-sc小倉囲み-g] {
   color: #1e1e1e !important;
 }
 
+/* Default Layouts */
+html.mobile .sentence, html:not(.mobile) .sentence-alt,
+.audio-buttons-alt, .image-alt {
+  display: none;
+}
+
 /*
  *  USER SETTINGS
  *  Please modify the variables at the top of the file.
  */
-lapis[data-main-picture-position="left"] .def-header {
+/* Layout changes */
+ lapis[data-main-picture-position="left"] .def-header {
   flex-flow: row-reverse;
 }
 
+lapis[data-main-picture-position="alt"] .dh-image,
+lapis[data-audio-buttons="alt"] .audio-buttons,
+lapis[data-sentence-position="above"] .sentence-alt,
+lapis[data-sentence-position="below"] .sentence {
+  display: none;
+}
+
+lapis[data-main-picture-position="alt"] .image-alt,
+lapis[data-audio-buttons="alt"] .audio-buttons-alt,
+lapis[data-sentence-position="above"] .sentence,
+lapis[data-sentence-position="below"] .sentence-alt {
+  display: block;
+}
+
+/* Audio Buttons Settings */
+lapis[data-audio-buttons="fixed"] .audio-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+lapis[data-audio-buttons="header"] .audio-buttons {
+  position: static;
+}
+
+/* Other Settings */
 lapis[data-sentence-furigana="always"] .sentence rt,
 lapis[data-sentence-furigana="always"] .sentence-alt rt {
   visibility: visible;
@@ -1084,20 +1125,6 @@ lapis[data-sentence-furigana="always"] .sentence-alt rt {
 lapis[data-sentence-furigana="off"] .sentence rt,
 lapis[data-sentence-furigana="off"] .sentence-alt rt {
   display: none;
-}
-
-html.mobile lapis[data-mobile-sentence-position="above"] .sentence-alt,
-html:not(.mobile) lapis[data-sentence-position="below"] .sentence {
-  display: none;
-}
-
-html.mobile lapis[data-mobile-sentence-position="above"] .sentence,
-html:not(.mobile) lapis[data-sentence-position="below"] .sentence-alt {
-  display: block;
-}
-
-html.mobile lapis[data-mobile-audio-buttons="header"] .audio-buttons {
-  position: static;
 }
 
 lapis[data-nsfw-blur-contained="on"] .NSFW,
@@ -1113,10 +1140,12 @@ lapis[data-glossary-separator="on"] .definition {
   }
 }
 
-lapis[data-jitendex-format~="minimal"] .definition {
-  & [data-sc-content]:not([data-sc-content="glossary"]) {
-    display: none;
-  }
+lapis[data-jitendex-format~="minimal"] .definition [data-sc-content]:not([data-sc-content="glossary"]),
+lapis[data-jitendex-format~="no-sentence"] .definition [data-sc-content|="example-sentence"],
+lapis[data-jitendex-format~="no-forms"] .definition [data-sc-content="forms"],
+lapis[data-jitendex-format~="no-xref"] .definition [data-sc-content|="xref"],
+lapis[data-jitendex-format~="no-img"] .definition [data-sc-content|="graphic"] {
+  display: none; 
 }
 
 lapis[data-jitendex-format~="minimal"] .definition,
@@ -1130,29 +1159,5 @@ lapis[data-jitendex-format~="no-tags"] .definition {
     & > li::marker {
       content: "";
     }
-  }
-}
-
-lapis[data-jitendex-format~="no-sentence"] .definition {
-  & [data-sc-content|="example-sentence"] {
-    display: none;
-  }
-}
-
-lapis[data-jitendex-format~="no-forms"] .definition {
-  & [data-sc-content="forms"] {
-    display: none;
-  }
-}
-
-lapis[data-jitendex-format~="no-xref"] .definition {
-  & [data-sc-content|="xref"] {
-    display: none;
-  }
-}
-
-lapis[data-jitendex-format~="no-img"] .definition {
-  & [data-sc-content|="graphic"] {
-    display: none;
   }
 }
