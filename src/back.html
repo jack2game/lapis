@@ -539,12 +539,11 @@
         }
     }
 
+    // Read user settings and set them as html attributes
     function userSettings() {
-        const oldSettings = document.querySelector("settings");
-        // Needed to give user instant feedback on their changes
-        oldSettings?.remove();
-
-        const settings = document.createElement("settings");
+        const styles = getComputedStyle(document.documentElement);
+        const miscInfo = document.querySelector("details:has(.misc-info)");
+        const lapis = document.getElementById("lapis");
         const options = [
             "--main-picture-position",
             "--sentence-furigana",
@@ -556,16 +555,14 @@
             "--glossary-separator",
             "--jitendex-format"
         ];
-        for (let opt of options) {
-            const value = getComputedStyle(document.documentElement).getPropertyValue(opt).trim();
-            settings.setAttribute("data-" + opt.slice(2), value.slice(1, -1));
-            if (opt === "--open-misc-info" && value === "\"on\"") {
-                const miscInfo = document.querySelector("details:has(.misc-info)");
-                if (miscInfo) miscInfo.open = true;
+        for (const opt of options) {
+            let value = styles.getPropertyValue(opt);
+            value = value.replace(/^"([^"]*)"$/, '$1').trim().toLowerCase();
+            lapis.setAttribute("data-" + opt.slice(2), value);
+            if (opt === "--open-misc-info" && value === "on" && miscInfo) {
+                miscInfo.open = true;
             }
         }
-        const lapis = document.getElementById("lapis");
-        lapis.parentElement.insertBefore(settings, lapis);
     }
 
     // Initialize all functions!!!

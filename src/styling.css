@@ -1072,55 +1072,55 @@ li[data-dictionary="旺文社 全訳古語辞典"] div[data-sc小倉囲み-g] {
  *  USER SETTINGS
  *  Please modify the variables at the top of the file.
  */
-settings[data-main-picture-position="left"] + lapis .def-header {
+lapis[data-main-picture-position="left"] .def-header {
   flex-flow: row-reverse;
 }
 
-settings[data-sentence-furigana="always"] + lapis .sentence rt,
-settings[data-sentence-furigana="always"] + lapis .sentence-mobile rt {
+lapis[data-sentence-furigana="always"] .sentence rt,
+lapis[data-sentence-furigana="always"] .sentence-mobile rt {
   visibility: visible;
 }
 
-settings[data-sentence-furigana="off"] + lapis .sentence rt,
-settings[data-sentence-furigana="off"] + lapis .sentence-mobile rt {
+lapis[data-sentence-furigana="off"] .sentence rt,
+lapis[data-sentence-furigana="off"] .sentence-mobile rt {
   display: none;
 }
 
-html.mobile settings[data-mobile-sentence-position="above"] + lapis .sentence-mobile,
-html:not(.mobile) settings[data-sentence-position="below"] + lapis .sentence {
+html.mobile lapis[data-mobile-sentence-position="above"] .sentence-mobile,
+html:not(.mobile) lapis[data-sentence-position="below"] .sentence {
   display: none;
 }
 
-html.mobile settings[data-mobile-sentence-position="above"] + lapis .sentence,
-html:not(.mobile) settings[data-sentence-position="below"] + lapis .sentence-mobile {
+html.mobile lapis[data-mobile-sentence-position="above"] .sentence,
+html:not(.mobile) lapis[data-sentence-position="below"] .sentence-mobile {
   display: block;
 }
 
-html.mobile settings[data-mobile-audio-buttons="header"] + lapis .audio-buttons {
+html.mobile lapis[data-mobile-audio-buttons="header"] .audio-buttons {
   position: static;
 }
 
-settings[data-nsfw-blur-contained="on"] + lapis .NSFW,
-settings[data-nsfw-blur-contained="on"] + lapis .nsfw,
-settings[data-nsfw-blur-contained="on"] + lapis .Nsfw {
+lapis[data-nsfw-blur-contained="on"] .NSFW,
+lapis[data-nsfw-blur-contained="on"] .nsfw,
+lapis[data-nsfw-blur-contained="on"] .Nsfw {
   overflow: hidden;
 }
 
-settings[data-glossary-separator="on"] + lapis .definition {
+lapis[data-glossary-separator="on"] .definition {
   & li[data-dictionary]:not(:last-of-type),
   & li[data-details]:not(:last-of-type) {
     border-bottom: 1px dashed var(--fg-subtle);
   }
 }
 
-settings[data-jitendex-format~="minimal"] + lapis .definition {
+lapis[data-jitendex-format~="minimal"] .definition {
   & [data-sc-content]:not([data-sc-content="glossary"]) {
     display: none;
   }
 }
 
-settings[data-jitendex-format~="minimal"] + lapis .definition,
-settings[data-jitendex-format~="no-tags"] + lapis .definition {
+lapis[data-jitendex-format~="minimal"] .definition,
+lapis[data-jitendex-format~="no-tags"] .definition {
   & [data-sc-code] {
     display: none;
   }
@@ -1133,25 +1133,25 @@ settings[data-jitendex-format~="no-tags"] + lapis .definition {
   }
 }
 
-settings[data-jitendex-format~="no-sentence"] + lapis .definition {
+lapis[data-jitendex-format~="no-sentence"] .definition {
   & [data-sc-content|="example-sentence"] {
     display: none;
   }
 }
 
-settings[data-jitendex-format~="no-forms"] + lapis .definition {
+lapis[data-jitendex-format~="no-forms"] .definition {
   & [data-sc-content="forms"] {
     display: none;
   }
 }
 
-settings[data-jitendex-format~="no-xref"] + lapis .definition {
+lapis[data-jitendex-format~="no-xref"] .definition {
   & [data-sc-content|="xref"] {
     display: none;
   }
 }
 
-settings[data-jitendex-format~="no-img"] + lapis .definition {
+lapis[data-jitendex-format~="no-img"] .definition {
   & [data-sc-content|="graphic"] {
     display: none;
   }
