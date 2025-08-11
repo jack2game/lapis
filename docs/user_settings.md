@@ -7,7 +7,7 @@ Make sure you **don't forget** a _doublequote_ or a _semi-colon_ at the end of a
 
 # Settings breakdown
 
-Some of these settings have mobile version, allowing you to setup different layouts per platform.
+All of these settings have a mobile counterpart, allowing you to setup different layouts per platform. If the one you want is not present in the file, you may have to add it yourself by prepending `mobile-` to its name.
 
 ### main-picture-position
 
