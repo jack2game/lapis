@@ -511,7 +511,7 @@ main {
   transition: filter 0.3s;
 }
 
-.image-alt {
+.image-alt img {
     margin: auto;
     max-width: 60%;
     max-height: 30vh;
