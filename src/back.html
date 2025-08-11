@@ -174,7 +174,7 @@
     // Show the color
     function paintTargetWord(pitchType) {
         const sentences = Array.from(
-            document.querySelectorAll(".sentence, .definition, .sentence-alt"),
+            document.querySelectorAll(".sentence, .sentence-alt, .definition"),
         );
         for (const sentence of sentences) {
             for (const targetWord of sentence.getElementsByTagName("b")) {
@@ -441,7 +441,7 @@
     function clickImages() {
         const modalBg = document.querySelector(".modal-bg");
         const imgPopup = document.querySelector(".img-popup");
-        const images = Array.from(document.querySelectorAll(".image img, .def-image img"));
+        const images = Array.from(document.querySelectorAll(".image img, .image-alt img, .def-image img"));
 
         if (images.length < 1) return;
 
