@@ -388,6 +388,10 @@ main {
   z-index: 1000;
 }
 
+.audio-buttons-alt {
+    font-size: 0;
+}
+
 /* Pitch */
 .pitch {
   display: inline;
@@ -514,8 +518,9 @@ main {
 .image-alt img {
   margin: auto;
   max-width: 60%;
-  max-height: 30vh;
+  max-height: 250px;
   border: solid var(--fg-subtle) 2px;
+  font-size: 0;
 }
 
 .image img:hover,
@@ -685,7 +690,6 @@ footer {
 }
 
 .dh-vocab {
-  /* left */
   background: var(--bg-elevated);
   padding: 0.52em;
   border-radius: 5px;
@@ -1087,70 +1091,70 @@ html.mobile .sentence, html:not(.mobile) .sentence-alt,
  *  Please modify the variables at the top of the file.
  */
 /* Layout changes */
- lapis[data-main-picture-position="left"] .def-header {
+#lapis[data-main-picture-position="left"] .def-header {
   flex-flow: row-reverse;
 }
 
-lapis[data-main-picture-position="alt"] .dh-image,
-lapis[data-audio-buttons="alt"] .audio-buttons,
-lapis[data-sentence-position="above"] .sentence-alt,
-lapis[data-sentence-position="below"] .sentence {
+#lapis[data-main-picture-position="alt"] .dh-image,
+#lapis[data-audio-buttons="alt"] .audio-buttons,
+#lapis[data-sentence-position="above"] .sentence-alt,
+#lapis[data-sentence-position="below"] .sentence {
   display: none;
 }
 
-lapis[data-main-picture-position="alt"] .image-alt,
-lapis[data-audio-buttons="alt"] .audio-buttons-alt,
-lapis[data-sentence-position="above"] .sentence,
-lapis[data-sentence-position="below"] .sentence-alt {
+#lapis[data-main-picture-position="alt"] .image-alt,
+#lapis[data-audio-buttons="alt"] .audio-buttons-alt,
+#lapis[data-sentence-position="above"] .sentence,
+#lapis[data-sentence-position="below"] .sentence-alt {
   display: block;
 }
 
 /* Audio Buttons Settings */
-lapis[data-audio-buttons="fixed"] .audio-buttons {
+#lapis[data-audio-buttons="fixed"] .audio-buttons {
   position: fixed;
   bottom: 0;
   left: 0;
   z-index: 1000;
 }
 
-lapis[data-audio-buttons="header"] .audio-buttons {
+#lapis[data-audio-buttons="header"] .audio-buttons {
   position: static;
 }
 
 /* Other Settings */
-lapis[data-sentence-furigana="always"] .sentence rt,
-lapis[data-sentence-furigana="always"] .sentence-alt rt {
+#lapis[data-sentence-furigana="always"] .sentence rt,
+#lapis[data-sentence-furigana="always"] .sentence-alt rt {
   visibility: visible;
 }
 
-lapis[data-sentence-furigana="off"] .sentence rt,
-lapis[data-sentence-furigana="off"] .sentence-alt rt {
+#lapis[data-sentence-furigana="off"] .sentence rt,
+#lapis[data-sentence-furigana="off"] .sentence-alt rt {
   display: none;
 }
 
-lapis[data-nsfw-blur-contained="on"] .NSFW,
-lapis[data-nsfw-blur-contained="on"] .nsfw,
-lapis[data-nsfw-blur-contained="on"] .Nsfw {
+#lapis[data-nsfw-blur-contained="on"] .NSFW,
+#lapis[data-nsfw-blur-contained="on"] .nsfw,
+#lapis[data-nsfw-blur-contained="on"] .Nsfw {
   overflow: hidden;
 }
 
-lapis[data-glossary-separator="on"] .definition {
+#lapis[data-glossary-separator="on"] .definition {
   & li[data-dictionary]:not(:last-of-type),
   & li[data-details]:not(:last-of-type) {
     border-bottom: 1px dashed var(--fg-subtle);
   }
 }
 
-lapis[data-jitendex-format~="minimal"] .definition [data-sc-content]:not([data-sc-content="glossary"]),
-lapis[data-jitendex-format~="no-sentence"] .definition [data-sc-content|="example-sentence"],
-lapis[data-jitendex-format~="no-forms"] .definition [data-sc-content="forms"],
-lapis[data-jitendex-format~="no-xref"] .definition [data-sc-content|="xref"],
-lapis[data-jitendex-format~="no-img"] .definition [data-sc-content|="graphic"] {
+#lapis[data-jitendex-format~="minimal"] .definition [data-sc-content]:not([data-sc-content="glossary"]),
+#lapis[data-jitendex-format~="no-sentence"] .definition [data-sc-content|="example-sentence"],
+#lapis[data-jitendex-format~="no-forms"] .definition [data-sc-content="forms"],
+#lapis[data-jitendex-format~="no-xref"] .definition [data-sc-content|="xref"],
+#lapis[data-jitendex-format~="no-img"] .definition [data-sc-content|="graphic"] {
   display: none; 
 }
 
-lapis[data-jitendex-format~="minimal"] .definition,
-lapis[data-jitendex-format~="no-tags"] .definition {
+#lapis[data-jitendex-format~="minimal"] .definition,
+#lapis[data-jitendex-format~="no-tags"] .definition {
   & [data-sc-code] {
     display: none;
   }
