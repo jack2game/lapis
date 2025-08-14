@@ -37,16 +37,20 @@
   --def-picture-size: 200px;
   --max-width: 800px;
 
-  /* See https://github.com/donkuri/lapis/tree/main/docs/user_settings.md for an overview of these variables */
-  --main-picture-position: "right"; /* "right", "left" */
-  --sentence-furigana: "hover"; /* "hover", "always", "off" */
+  /* For an overview of these variables
+  See https://github.com/donkuri/lapis/tree/main/docs/user_settings.md */
+  --main-picture-position: "right"; /* "right", "left", "alt" */
   --sentence-position: "above"; /* "above", "below" the definition box*/
-  --mobile-sentence-position: "below";
-  --mobile-audio-buttons: "default"; /* "default", "header" (inside vocabulary box) */
+  --audio-buttons: "header"; /* "header", "fixed", "alt" */
+  --sentence-furigana: "hover"; /* "hover", "always", "off" */
   --nsfw-blur-contained: "on"; /* "on", "off" */
   --open-misc-info: "off"; /* "on", "off" */
   --glossary-separator: "on"; /* "on" to separate dictionaries in definition box */
   --jitendex-format: "full"; /* "minimal" or space-separated list of "no-tags", "no-sentence", "no-forms", "no-xref", "no-img" */
+
+  --mobile-main-picture-position: "right"; /* "left", "right", "alt" */
+  --mobile-sentence-position: "below";
+  --mobile-audio-buttons: "fixed"; /* "fixed", "header", "alt" */
 
   /* Pitch colors */
   --dark-mode-heiban: #39bae6;
@@ -193,9 +197,7 @@
   --skogo-gendai-mark: #888;
 }
 
-html.win,
-html.mac,
-html.linux:not(.android) {
+html {
   --main-font-size: var(--pc-main-font-size);
   --main-def-size: var(--pc-main-def-size);
   --vocab-font-size: var(--pc-vocab-font-size);
@@ -215,6 +217,9 @@ html.mobile {
   --back-sentence-font-size: var(--mobile-back-sentence-font-size);
   --hint-font-size: var(--mobile-hint-font-size);
   --info-font-size: var(--mobile-info-font-size);
+  --main-picture-position: var(--mobile-main-picture-position);
+  --sentence-position: var(--mobile-sentence-position);
+  --audio-buttons: var(--mobile-audio-buttons);
 }
 
 #lapis {
@@ -383,6 +388,10 @@ main {
   z-index: 1000;
 }
 
+.audio-buttons-alt {
+    font-size: 0;
+}
+
 /* Pitch */
 .pitch {
   display: inline;
@@ -438,7 +447,7 @@ main {
   text-align: left;
   border-left: 5px solid #ccc;
   padding: 0.5em 10px;
-  margin: 5px auto;
+  margin: 5px auto 10px auto;
   overflow: hidden;
   position: relative;
 }
@@ -498,7 +507,7 @@ main {
 }
 
 /* Primary Image */
-.image img {
+.image img, .image-alt img {
   max-height: 400px;
   width: auto;
   border-radius: 5px;
@@ -506,7 +515,16 @@ main {
   transition: filter 0.3s;
 }
 
+.image-alt img {
+  margin: auto;
+  max-width: 60%;
+  max-height: 250px;
+  border: solid var(--fg-subtle) 2px;
+  font-size: 0;
+}
+
 .image img:hover,
+.image-alt img:hover,
 .def-image img:hover {
   filter: brightness(var(--image-brightness));
 }
@@ -600,7 +618,7 @@ main {
 
 /* Back sentence */
 .sentence,
-.sentence-mobile {
+.sentence-alt {
   line-height: 1.5;
   font-size: var(--back-sentence-font-size);
   display: inline-block;
@@ -613,11 +631,6 @@ main {
   & ruby:hover rt {
     visibility: visible;
   }
-}
-
-.mobile .sentence,
-html:not(.mobile) .sentence-mobile {
-  display: none;
 }
 
 /* Footer */
@@ -676,8 +689,7 @@ footer {
   gap: min(20px, 2vw);
 }
 
-.dh-left {
-  /* left */
+.dh-vocab {
   background: var(--bg-elevated);
   padding: 0.52em;
   border-radius: 5px;
@@ -685,24 +697,24 @@ footer {
   /* takes up all available space */
 }
 
-.dh-right {
+.dh-image {
   max-width: 400px;
   position: relative;
   font-size: 0;
   /* weird hack needed to make the image stay in line with the .def-header */
 }
 
-.mobile .dh-left {
+.mobile .dh-vocab {
   background: none;
   padding: 0em;
   border-radius: 0px;
 }
 
-.mobile .dh-left:has(~ .dh-right) {
+.mobile .dh-vocab:has(~ .dh-image) {
   max-width: 60vw;
 }
 
-.mobile .dh-right {
+.mobile .dh-image {
   max-width: 40vw;
 }
 
@@ -1068,59 +1080,81 @@ li[data-dictionary="旺文社 全訳古語辞典"] div[data-sc小倉囲み-g] {
   color: #1e1e1e !important;
 }
 
+/* Default Layouts */
+html.mobile .sentence, html:not(.mobile) .sentence-alt,
+.audio-buttons-alt, .image-alt {
+  display: none;
+}
+
 /*
  *  USER SETTINGS
  *  Please modify the variables at the top of the file.
  */
-settings[data-main-picture-position="left"] + lapis .def-header {
+/* Layout changes */
+#lapis[data-main-picture-position="left"] .def-header {
   flex-flow: row-reverse;
 }
 
-settings[data-sentence-furigana="always"] + lapis .sentence rt,
-settings[data-sentence-furigana="always"] + lapis .sentence-mobile rt {
-  visibility: visible;
-}
-
-settings[data-sentence-furigana="off"] + lapis .sentence rt,
-settings[data-sentence-furigana="off"] + lapis .sentence-mobile rt {
+#lapis[data-main-picture-position="alt"] .dh-image,
+#lapis[data-audio-buttons="alt"] .audio-buttons,
+#lapis[data-sentence-position="above"] .sentence-alt,
+#lapis[data-sentence-position="below"] .sentence {
   display: none;
 }
 
-html.mobile settings[data-mobile-sentence-position="above"] + lapis .sentence-mobile,
-html:not(.mobile) settings[data-sentence-position="below"] + lapis .sentence {
-  display: none;
-}
-
-html.mobile settings[data-mobile-sentence-position="above"] + lapis .sentence,
-html:not(.mobile) settings[data-sentence-position="below"] + lapis .sentence-mobile {
+#lapis[data-main-picture-position="alt"] .image-alt,
+#lapis[data-audio-buttons="alt"] .audio-buttons-alt,
+#lapis[data-sentence-position="above"] .sentence,
+#lapis[data-sentence-position="below"] .sentence-alt {
   display: block;
 }
 
-html.mobile settings[data-mobile-audio-buttons="header"] + lapis .audio-buttons {
+/* Audio Buttons Settings */
+#lapis[data-audio-buttons="fixed"] .audio-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+#lapis[data-audio-buttons="header"] .audio-buttons {
   position: static;
 }
 
-settings[data-nsfw-blur-contained="on"] + lapis .NSFW,
-settings[data-nsfw-blur-contained="on"] + lapis .nsfw,
-settings[data-nsfw-blur-contained="on"] + lapis .Nsfw {
+/* Other Settings */
+#lapis[data-sentence-furigana="always"] .sentence rt,
+#lapis[data-sentence-furigana="always"] .sentence-alt rt {
+  visibility: visible;
+}
+
+#lapis[data-sentence-furigana="off"] .sentence rt,
+#lapis[data-sentence-furigana="off"] .sentence-alt rt {
+  display: none;
+}
+
+#lapis[data-nsfw-blur-contained="on"] .NSFW,
+#lapis[data-nsfw-blur-contained="on"] .nsfw,
+#lapis[data-nsfw-blur-contained="on"] .Nsfw {
   overflow: hidden;
 }
 
-settings[data-glossary-separator="on"] + lapis .definition {
+#lapis[data-glossary-separator="on"] .definition {
   & li[data-dictionary]:not(:last-of-type),
   & li[data-details]:not(:last-of-type) {
     border-bottom: 1px dashed var(--fg-subtle);
   }
 }
 
-settings[data-jitendex-format~="minimal"] + lapis .definition {
-  & [data-sc-content]:not([data-sc-content="glossary"]) {
-    display: none;
-  }
+#lapis[data-jitendex-format~="minimal"] .definition [data-sc-content]:not([data-sc-content="glossary"]),
+#lapis[data-jitendex-format~="no-sentence"] .definition [data-sc-content|="example-sentence"],
+#lapis[data-jitendex-format~="no-forms"] .definition [data-sc-content="forms"],
+#lapis[data-jitendex-format~="no-xref"] .definition [data-sc-content|="xref"],
+#lapis[data-jitendex-format~="no-img"] .definition [data-sc-content|="graphic"] {
+  display: none; 
 }
 
-settings[data-jitendex-format~="minimal"] + lapis .definition,
-settings[data-jitendex-format~="no-tags"] + lapis .definition {
+#lapis[data-jitendex-format~="minimal"] .definition,
+#lapis[data-jitendex-format~="no-tags"] .definition {
   & [data-sc-code] {
     display: none;
   }
@@ -1130,29 +1164,5 @@ settings[data-jitendex-format~="no-tags"] + lapis .definition {
     & > li::marker {
       content: "";
     }
-  }
-}
-
-settings[data-jitendex-format~="no-sentence"] + lapis .definition {
-  & [data-sc-content|="example-sentence"] {
-    display: none;
-  }
-}
-
-settings[data-jitendex-format~="no-forms"] + lapis .definition {
-  & [data-sc-content="forms"] {
-    display: none;
-  }
-}
-
-settings[data-jitendex-format~="no-xref"] + lapis .definition {
-  & [data-sc-content|="xref"] {
-    display: none;
-  }
-}
-
-settings[data-jitendex-format~="no-img"] + lapis .definition {
-  & [data-sc-content|="graphic"] {
-    display: none;
   }
 }
