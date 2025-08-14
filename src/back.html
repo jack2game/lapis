@@ -469,17 +469,20 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     function clickImages() {
         const modalBg = document.querySelector(".modal-bg");
         const imgPopup = document.querySelector(".img-popup");
-        const images = Array.from(document.querySelectorAll(".image img, .image-alt img, .def-image img"));
+        let images = Array.from(document.querySelectorAll(".image img, .image-alt img, .def-image img"));
+        /* Disable image links that were opening in a browser window */
+        const glossImageLinks = document.querySelectorAll(".definition a:has(img)");
+        glossImageLinks.forEach(link => link.href = "");
 
-        if (images.length < 1) return;
-
+        images = [... images, ... glossImageLinks];
+        if(images.length < 1) return;
         for (let image of images) {
             image.addEventListener("click", () => {
                 const imgPopupContainer = document.createElement("div");
                 const imgPopupImg = document.createElement("img");
 
                 imgPopupContainer.classList.add("img-popup-container");
-                imgPopupImg.src = image.src;
+                imgPopupImg.src = image.src || image.querySelector("img").src;
                 imgPopupImg.classList.add("img-popup-img");
 
                 if (image.height > image.width) {
