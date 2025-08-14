@@ -27,8 +27,8 @@ function countdown( elementName, minutes, seconds )
 countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
 </script>
 
-<lapis id="lapis">
-<!---------- Header ------------->
+<div id="lapis" lang="ja">
+    <!---------- Header ------------->
     <header>
         <div class="top-container">
             <!-- Show the frequency number -->
@@ -48,10 +48,10 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         </div>
     </header>
 
-    <main lang="ja">
+    <main>
         <!-- The first row (vocab box+picture) -->
         <div class="def-header">
-            <div class="dh-left">
+            <div class="dh-vocab">
                 <div class="vocab">
                     {{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}
                     {{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}
@@ -69,13 +69,13 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
                     <span id="pitch-tags" class="tags"> {{PitchPosition}} </span>
                     {{/PitchPosition}}
                     <br />
-                    <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
+                    <div class="audio-buttons"></div>
                 </div>
             </div>
 
             <!-- Image -->
             {{#Picture}}
-            <div class="dh-right">
+            <div class="dh-image">
                 <div class="image tappable {{Tags}}">{{Picture}}</div>
             </div>
             {{/Picture}}
@@ -83,8 +83,10 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
 
         <br>
         <div class="sentence">
-            {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
-            {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+            {{#Picture}}<div class="image-alt tappable {{Tags}}">{{Picture}}</div>{{/Picture}}
+                {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
+                {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+            <div class="audio-buttons-alt"></div>
         </div>
 
         <!-- The entire definition box -->
@@ -106,10 +108,12 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
             </div>
         </div>
 
-        <!-- This is for the sentence that you see on mobile (positioned under definition), on Desktop, the sentence goes above the definition box, and this is hidden -->
-        <div class="sentence-mobile">
-            {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
-            {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+        <!-- Alternative Sentence Position -->
+        <div class="sentence-alt">
+            {{#Picture}}<div class="image-alt tappable {{Tags}}">{{Picture}}</div>{{/Picture}}
+                {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
+                {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+            <div class="audio-buttons-alt"></div>
         </div>
 
         <!------- Image modal --------->
@@ -130,7 +134,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     </main>
 
     <!----------- Footer ------------->
-    <footer lang="ja">
+    <footer>
         <br>
         <div class="bot-container">
             {{#Tags}}
@@ -140,10 +144,16 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
             {{/Tags}}
         </div>
     </footer>
-</lapis>
+</div>
 
 <!----------- Scripts ------------>
 <script>
+    // Hack to add multiple buttons without Anki playing them multiple times
+    function addAudioButtons() {
+        const audioContainers = document.querySelectorAll(".audio-buttons, .audio-buttons-alt");
+        audioContainers.forEach(audio => audio.innerHTML = `{{ExpressionAudio}}{{SentenceAudio}}`);
+    }
+
     // This code is concerned with calculating the Pitch Accent and constructing the pitch accent graphs
     function isOdaka(pitchNumber) {
         const kana = `{{kana:ExpressionFurigana}}` || `{{ExpressionReading}}`;
@@ -192,7 +202,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     // Show the color
     function paintTargetWord(pitchType) {
         const sentences = Array.from(
-            document.querySelectorAll(".sentence, .definition, .sentence-mobile"),
+            document.querySelectorAll(".sentence, .sentence-alt, .definition"),
         );
         for (const sentence of sentences) {
             for (const targetWord of sentence.getElementsByTagName("b")) {
@@ -459,7 +469,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
     function clickImages() {
         const modalBg = document.querySelector(".modal-bg");
         const imgPopup = document.querySelector(".img-popup");
-        const images = Array.from(document.querySelectorAll(".image img, .def-image img"));
+        const images = Array.from(document.querySelectorAll(".image img, .image-alt img, .def-image img"));
 
         if (images.length < 1) return;
 
@@ -524,16 +534,16 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         frequency.innerHTML = freqHtml;
     }
 
-    // Sets the height of dhLeft, dhRight, defHeader as a whole
+    // Sets the height of dhVocab, dhImage, defHeader as a whole
     function setDHHeight() {
-        var dhLeft = document.querySelector('.dh-left');
-        var dhRight = document.querySelector('.dh-right .image img');
+        var dhVocab = document.querySelector('.dh-vocab');
+        var dhImage = document.querySelector('.dh-image img');
         var defHeader = document.querySelector('.def-header');
 
-        if (dhLeft && dhRight) {
-            var dhLeftHeight = dhLeft.offsetHeight;
-            dhRight.style.maxHeight = `${dhLeftHeight}px`;
-            defHeader.style.maxHeight = `${dhLeftHeight}px`;
+        if (dhVocab && dhImage) {
+            var dhVocabHeight = dhVocab.offsetHeight;
+            dhImage.style.maxHeight = `${dhVocabHeight}px`;
+            defHeader.style.maxHeight = `${dhVocabHeight}px`;
         }
     }
 
@@ -568,37 +578,35 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         }
     }
 
+    // Read user settings and set them as html attributes
     function userSettings() {
-        const oldSettings = document.querySelector("settings");
-        // Needed to give user instant feedback on their changes
-        oldSettings?.remove();
-
-        const settings = document.createElement("settings");
+        const styles = getComputedStyle(document.documentElement);
+        const miscInfo = document.querySelector("details:has(.misc-info)");
+        const lapis = document.getElementById("lapis");
         const options = [
             "--main-picture-position",
             "--sentence-furigana",
             "--sentence-position",
-            "--mobile-sentence-position",
-            "--mobile-audio-buttons",
+            "--audio-buttons",
             "--nsfw-blur-contained",
             "--open-misc-info",
             "--glossary-separator",
             "--jitendex-format"
         ];
-        for (let opt of options) {
-            const value = getComputedStyle(document.documentElement).getPropertyValue(opt).trim();
-            settings.setAttribute("data-" + opt.slice(2), value.slice(1, -1));
-            if (opt === "--open-misc-info" && value === "\"on\"") {
-                const miscInfo = document.querySelector("details:has(.misc-info)");
-                if (miscInfo) miscInfo.open = true;
+        for (const opt of options) {
+            let value = styles.getPropertyValue(opt);
+            value = value.replace(/^['"]|['"]$/g,"").trim().toLowerCase();
+            lapis.setAttribute("data-" + opt.slice(2), value);
+            if (opt === "--open-misc-info" && value === "on" && miscInfo) {
+                miscInfo.open = true;
             }
         }
-        const lapis = document.getElementById("lapis");
-        lapis.parentElement.insertBefore(settings, lapis);
     }
 
     // Initialize all functions!!!
     function initialize() {
+        addAudioButtons();
+        userSettings();
         splitTags();
         handlePitches();
         setUpDefToggle();
@@ -607,7 +615,6 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         setDHHeight();
         hideCorrectDefinition();
         movePrimaryDicts();
-        userSettings();
     }
 
     initialize();
