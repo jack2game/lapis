@@ -122,7 +122,7 @@ The `Is...Card` fields let you select the kind of card you want to use by placin
 
 | Field selected        | Effect                                                                |
 | --------------------- | --------------------------------------------------------------------- |
-| IsWordAndSentenceCard | Displays the `Sentence` field as a hint below the word on the front.  |
+| IsWordAndSentenceCard | Displays the `Sentence` field as a hint below the word on the front   |
 | IsClickCard           | Makes the word in the front of the card clickable to get the sentence |
 | IsSentenceCard        | The full sentence appears in the front instead of only the word       |
 | IsAudioCard           | Plays the sentence audio and shows the sentence with the word missing |
