@@ -836,6 +836,7 @@ ul[data-sc-content="glossary"] > li:not(:first-child)::before {
   white-space: pre-wrap;
   content: " | ";
   display: inline;
+  color: var(--fg-subtle);
 }
 
 ul[data-sc-content="glossary"] > li {
@@ -845,7 +846,7 @@ ul[data-sc-content="glossary"] > li {
 ul[data-sc-content="glossary"] {
   display: inline;
   list-style: none;
-  padding-left: 0;
+  padding-left: 0!important;
 }
 
 [data-sc-content="glossary"] ~ ul,
