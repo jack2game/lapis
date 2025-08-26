@@ -834,20 +834,22 @@ summary {
 }
 
 /* Format Definitions */
-ul[data-sc-content="glossary"] > li:not(:first-child)::before {
-  white-space: pre-wrap;
-  content: " | ";
-  display: inline;
-}
+ul[data-sc-content="glossary"],
+[data-sc-content="forms"],
+[data-dictionary^="JMdict"]ul:not([data-sc-content]) {
+    display: inline;
+    list-style: none;
+    padding-left: 0!important;
 
-ul[data-sc-content="glossary"] > li {
-  display: inline;
-}
+    &>li:not(:first-child)::before {
+        white-space: pre-wrap;
+        content: " | ";
+        display: inline;
+    }
 
-ul[data-sc-content="glossary"] {
-  display: inline;
-  list-style: none;
-  padding-left: 0;
+    & > li {
+        display: inline;
+    }
 }
 
 [data-sc-content="glossary"] ~ ul,
