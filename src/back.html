@@ -144,7 +144,7 @@
         } else if (pitchPosition === 1) {
             return "atamadaka";
         } else if (pitchPosition > 1) {
-            return noSmallKana(word_kana).length === pitchPosition ? "odaka" : "nakadaka";
+            return removeSmallKana(word_kana).length === pitchPosition ? "odaka" : "nakadaka";
         }
     }
 
@@ -155,12 +155,12 @@
         const pitches = fieldText.match(/(?<!\d\+)\d+(?!\+\d)/g)?.map(Number) || [];
         if (pitches.length > 0) paintTargetWord(getPitchType(exprKana, pitches[0]));
 
-        // NHK dictionary pitch
+        // NHK dictionary pitches
         const NHKDict = document.querySelector(
             '#glossaries li[data-dictionary=\"NHK日本語発音アクセント新辞典\"]');
         const NHKText = NHKDict?.innerHTML.split("<br><br>")[0];
         let NHKPitches = NHKText?.match(/[あ-ヺ°ー＼]+(・[あ-ヺ°ー＼]+)+(?!【)/g) || [];
-        // User added pitch
+        // User added pitches, supports AJT
         const customPitches = fieldText.match(/[あ-ヺ°ー\\＼ꜜ]+(・[あ-ヺ°ー\\＼ꜜ]+)*/g) || [];
 
         // Dirty single katakana to hiragana conversion
@@ -170,24 +170,27 @@
             return isKatakana ? String.fromCodePoint(codePoint - 0x60) : kana;
         }
 
-        [...customPitches, ...NHKPitches]
-            .filter(pitch => {
-                const pitchKana = pitch.replace(/[・\\＼ꜜ\u3099\u309A]/g,"");
-                return Array.from(pitchKana).every((kana, index) => {
-                    const hira = toHiragana(kana);
-                    const exprHira = toHiragana(exprKana[index]);
-                    return hira === exprHira || hira === 'ー' && "あえいうお".includes(exprHira);
-                })
+        [...customPitches, ...NHKPitches].filter(pitch => {
+            // Normalize nasal notations
+            const pitchKana = pitch.replace(/([カキクケコかきくけこ])[\u309A°]/g, 
+                (match, p1) => String.fromCodePoint(p1.codePointAt(0) + 0x01))
+                // Remove downsteps
+                .replace(/[・\\＼ꜜ]/g,"");
+            return Array.from(pitchKana).every((kana, index) => {
+                const hira = toHiragana(kana);
+                const exprHira = toHiragana(exprKana[index]);
+                return hira === exprHira || hira === 'ー' && "あえいうお".includes(exprHira);
             })
-            .forEach(matchedPitches => {
-                const pitchArray = matchedPitches.split("・").map(word => {
-                    const morae = noSmallKana(word);
-                    const position = morae.search(/[\\＼ꜜ]/);
-                    const moraCount = morae.replace(/[\\＼ꜜ]/g,'').length;
-                    return {position: position === - 1 ? 0 : position, moraCount: moraCount};
-                });
-                pitches.push(pitchArray.length === 1 ? pitchArray[0].position : pitchArray);
+        })
+        .forEach(matchedPitches => {
+            const pitchArray = matchedPitches.split("・").map(word => {
+                const morae = removeSmallKana(word);
+                const position = morae.search(/[\\＼ꜜ]/);
+                const moraCount = morae.replace(/[\\＼ꜜ]/g,'').length;
+                return {position: position === - 1 ? 0 : position, moraCount: moraCount};
             });
+            pitches.push(pitchArray.length === 1 ? pitchArray[0].position : pitchArray);
+        });
 
         if (pitches.length > 0) constructPitch(new Set(pitches));
     }
@@ -218,7 +221,7 @@
     }
 
     // Useful to determine morae count
-    function noSmallKana(kana) {
+    function removeSmallKana(kana) {
         return kana.replace(/[ァィゥェォャュョヮぁぃぅぇぉゃゅょゎ\u3099\u309A°]/g, "");
     }
 
