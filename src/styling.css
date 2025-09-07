@@ -406,6 +406,9 @@ main {
   vertical-align: top;
   padding: 1px 3px;
   margin-right: -5px;
+  &:has(li) {
+    display: inline-block;
+  }
 }
 
 .mobile .nightMode #pitch-tags {
