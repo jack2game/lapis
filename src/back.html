@@ -153,13 +153,12 @@
         const fieldText = `{{text:PitchPosition}}`;
         // Pitch numbers not in a n+m pattern
         const pitches = fieldText.match(/(?<!\d\+)\d+(?!\+\d)/g)?.map(Number) || [];
-        if (pitches.length > 0) paintTargetWord(getPitchType(exprKana, pitches[0]));
 
         // NHK dictionary pitches
         const NHKDict = document.querySelector(
             '#glossaries li[data-dictionary=\"NHK日本語発音アクセント新辞典\"]');
         const NHKText = NHKDict?.innerHTML.split("<br><br>")[0];
-        let NHKPitches = NHKText?.match(/[あ-ヺ°ー＼]+(・[あ-ヺ°ー＼]+)+(?!【)/g) || [];
+        const NHKPitches = NHKText?.match(/[あ-ヺ°ー＼]+(・[あ-ヺ°ー＼]+)+(?!【)/g) || [];
         // User added pitches, supports AJT
         const customPitches = fieldText.match(/[あ-ヺ°ー\\＼ꜜ]+(・[あ-ヺ°ー\\＼ꜜ]+)*/g) || [];
 
@@ -192,6 +191,8 @@
             pitches.push(pitchArray.length === 1 ? pitchArray[0].position : pitchArray);
         });
 
+        const pitchPosition = pitches.find(pitch => !Array.isArray(pitch));
+        if (pitchPosition) paintTargetWord(getPitchType(exprKana, pitchPosition));
         if (pitches.length > 0) constructPitch(new Set(pitches));
     }
 
