@@ -192,7 +192,7 @@
         });
 
         const pitchPosition = pitches.find(pitch => !Array.isArray(pitch));
-        if (pitchPosition) paintTargetWord(getPitchType(exprKana, pitchPosition));
+        if (pitchPosition !== undefined) paintTargetWord(getPitchType(exprKana, pitchPosition));
         if (pitches.length > 0) constructPitch(new Set(pitches));
     }
 
