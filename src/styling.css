@@ -773,44 +773,33 @@ summary {
   margin: 0px auto;
 }
 
-/* Pitch graphs css */
-.pitch-low {
-  position: relative;
+/* Pitch overline */
+.pitch-item>span {
+    position: relative;
 }
 
-.pitch-high {
-  position: relative;
+.pitch-line {
+    display: block;
+    position: absolute;
+    top: -0.1em;
+    left: 0;
+    right: 0;
+    border-width: 0.1em;
+    border-top-style: solid;
 }
 
-.pitch-high > .pitch-line {
-  display: block;
-  position: absolute;
-  top: -0.1em;
-  left: 0;
-  right: 0;
-  height: 0;
-  border-top-width: 0.1em;
-  border-top-style: solid;
+.pitch-low>.pitch-line {
+    border-top-style: none;
 }
 
 .pitch-to-drop {
-  position: relative;
-  padding-right: 0.1em;
-  margin-right: 0.1em;
-}
-
-.pitch-to-drop > .pitch-line {
-  display: block;
-  position: absolute;
-  top: -0.1em;
-  left: 0;
-  right: 0;
-  border-top-width: 0.1em;
-  border-top-style: solid;
-  right: -0.1em;
-  height: 0.4em;
-  border-right-width: 0.1em;
-  border-right-style: solid;
+    padding-right: 0.1em;
+    margin-right: 0.1em;
+    &>.pitch-line {
+        height: 0.4em;
+        right: -0.1em;
+        border-right-style: solid;
+    }
 }
 
 /* Pitch coloring */
