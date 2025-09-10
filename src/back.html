@@ -154,6 +154,13 @@
         // Pitch numbers not in a n+m pattern
         const pitches = fieldText.match(/(?<!\d\+)\d+(?!\+\d)/g)?.map(Number) || [];
 
+        // Jidoujisho graphs
+        const JJGraphs = document.querySelectorAll("#pitch-tags svg");
+        JJGraphs.forEach(graph => {
+            const graphPaths = graph.querySelectorAll("path");
+            const downstep = [...graphPaths].findIndex(path => path.getAttribute("d").endsWith(",25"));
+            pitches.push(downstep === undefined ? 0 : downstep + 1);
+        });
         // NHK dictionary pitches
         const NHKDict = document.querySelector(
             '#glossaries li[data-dictionary=\"NHK日本語発音アクセント新辞典\"]');
@@ -171,15 +178,15 @@
 
         [...customPitches, ...NHKPitches].filter(pitch => {
             // Normalize nasal notations
-            const pitchKana = pitch.replace(/([カキクケコかきくけこ])[\u309A°]/g, 
+            const pitchKana = pitch.replace(/([カキクケコかきくけこ])[\u309A°]/g,
                 (match, p1) => String.fromCodePoint(p1.codePointAt(0) + 0x01))
                 // Remove downsteps
                 .replace(/[・\\＼ꜜ]/g,"");
             return Array.from(pitchKana).every((kana, index) => {
                 const hira = toHiragana(kana);
                 const exprHira = toHiragana(exprKana[index]);
-                return hira === exprHira || hira === 'ー' && "あえいうお".includes(exprHira);
-            })
+                return hira === exprHira || hira === 'ー' && "あいうえお".includes(exprHira);
+            });
         })
         .forEach(matchedPitches => {
             const pitchArray = matchedPitches.split("・").map(word => {
