@@ -164,8 +164,10 @@
         // NHK dictionary pitches
         const NHKDict = document.querySelector(
             '#glossaries li[data-dictionary=\"NHK日本語発音アクセント新辞典\"]');
-        const NHKText = NHKDict?.innerHTML.split("<br><br>")[0];
-        const NHKPitches = NHKText?.match(/[あ-ヺ°ー＼]+(・[あ-ヺ°ー＼]+)+(?!【)/g) || [];
+        const isYomitan = document.querySelector("#glossaries .yomitan-glossary");
+        let NHKText = NHKDict?.innerHTML.split("<br><br>")[0];
+        if (!NHKText && !isYomitan) NHKText = document.querySelector("#glossaries").textContent;
+        const NHKPitches = NHKText?.match(/(?<=・\d+］)[あ-ヺ°ー＼]+(・[あ-ヺ°ー＼]+)+/g) || [];
         // User added pitches, supports AJT
         const customPitches = fieldText.match(/[あ-ヺ°ー\\＼ꜜ]+(・[あ-ヺ°ー\\＼ꜜ]+)*/g) || [];
 
@@ -182,6 +184,7 @@
                 (match, p1) => String.fromCodePoint(p1.codePointAt(0) + 0x01))
                 // Remove downsteps
                 .replace(/[・\\＼ꜜ]/g,"");
+            if (pitchKana.length !== exprKana.legnth) return false;
             return Array.from(pitchKana).every((kana, index) => {
                 const hira = toHiragana(kana);
                 const exprHira = toHiragana(exprKana[index]);
