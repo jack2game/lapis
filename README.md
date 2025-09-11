@@ -242,7 +242,7 @@ Most likely it is because you are not using the right tag. Make sure your cards 
 
 ### I have some garbage text like \<ruby\> inside the pitch.
 
-ExpressionFurigana in Yomitan's settings must use `{furigana-plain}`. It gets autofilled with `{furigana}` so it's easily overlooked.
+ExpressionFurigana in Yomitan's settings must use `{furigana-plain}`. It gets autofilled with `{furigana}` so it's easily overlooked. This will ensure future cards you add are formatted correctly. You can fix previously created cards by bulk-regenerating furigana following the instructions in [AJT Japanese Setup](docs/anki_setup.md). Select the `Furigana Overwrite` profile, set the `Source` to `Expression` and the `Destination` to `ExpressionFurigana`. Save the profile, restart Anki, then continue the bulk-regeneration process as described in the guide. Once completed, be sure to reset `Source` to `Sentence` and `Destination` to `SentenceFurigana` for the `Furigana Overwrite` profile.
 
 ### I found a bug, where can I report it?
 
