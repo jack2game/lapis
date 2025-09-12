@@ -184,7 +184,7 @@
                 (match, p1) => String.fromCodePoint(p1.codePointAt(0) + 0x01))
                 // Remove downsteps
                 .replace(/[・\\＼ꜜ]/g,"");
-            if (pitchKana.length !== exprKana.legnth) return false;
+            if (pitchKana.length !== exprKana.length) return false;
             return Array.from(pitchKana).every((kana, index) => {
                 const hira = toHiragana(kana);
                 const exprHira = toHiragana(exprKana[index]);
