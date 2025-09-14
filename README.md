@@ -10,7 +10,7 @@ An advanced yet lightweight [Anki](https://apps.ankiweb.net/) notetype, thoughtf
 ### Table of Contents
 
 - [Lapis](#lapis)
-    - [Table of Contents](#table-of-contents)
+  - [Table of Contents](#table-of-contents)
   - [Why was Lapis created?](#why-was-lapis-created)
   - [Key features](#key-features)
   - [How to use Lapis](#how-to-use-lapis)
@@ -242,7 +242,15 @@ Most likely it is because you are not using the right tag. Make sure your cards 
 
 ### I have some garbage text like \<ruby\> inside the pitch.
 
-ExpressionFurigana in Yomitan's settings must use `{furigana-plain}`. It gets autofilled with `{furigana}` so it's easily overlooked.
+ExpressionFurigana in Yomitan's settings must use `{furigana-plain}`. It gets autofilled with `{furigana}` so it's easily overlooked. This will ensure future cards you add are formatted correctly, and there are a few ways you can fix previously created cards.
+
+#### Using the `backfill-anki-yomitan` addon
+
+Install and enable the [Yomitan API](https://github.com/Kuuuube/yomitan-api), then download the [addon](https://ankiweb.net/shared/info/1184164376) and follow the usage instructions.
+
+#### Using `AJT Japanese`
+
+If you don't have Yomitan set up you can bulk-regenerate furigana by following the instructions in [AJT Japanese Setup](docs/anki_setup.md). Select the `Furigana Overwrite` profile, set the `Source` to `Expression` and the `Destination` to `ExpressionFurigana`. Save the profile, restart Anki, then continue the bulk-regeneration process as described in the guide. Once completed, be sure to reset `Source` to `Sentence` and `Destination` to `SentenceFurigana` for the `Furigana Overwrite` profile. One caveat with this method is that AJT might mishandle cases where two words share the same kanji but have different readings.
 
 ### I found a bug, where can I report it?
 
