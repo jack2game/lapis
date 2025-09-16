@@ -150,26 +150,7 @@
 
     function handlePitches() {
         const exprKana = `{{kana:ExpressionFurigana}}` || `{{ExpressionReading}}`;
-        const fieldText = `{{text:PitchPosition}}`;
-        // Pitch numbers not in a n+m pattern
-        const pitches = fieldText.match(/(?<!\d\+)\d+(?!\+\d)/g)?.map(Number) || [];
-
-        // Jidoujisho graphs
-        const JJGraphs = document.querySelectorAll("#pitch-tags svg");
-        JJGraphs.forEach(graph => {
-            const graphPaths = graph.querySelectorAll("path");
-            const downstep = [...graphPaths].findIndex(path => path.getAttribute("d").endsWith(",25"));
-            pitches.push(downstep === undefined ? 0 : downstep + 1);
-        });
-        // NHK dictionary pitches
-        const NHKDict = document.querySelector(
-            '#glossaries li[data-dictionary=\"NHK日本語発音アクセント新辞典\"]');
         const isYomitan = document.querySelector("#glossaries .yomitan-glossary");
-        let NHKText = NHKDict?.innerHTML.split("<br><br>")[0];
-        if (!NHKText && !isYomitan) NHKText = document.querySelector("#glossaries").textContent;
-        const NHKPitches = NHKText?.match(/(?<=・\d+］)[あ-ヺ°ー＼]+(・[あ-ヺ°ー＼]+)+/g) || [];
-        // User added pitches, supports AJT
-        const customPitches = fieldText.match(/[あ-ヺ°ー\\＼ꜜ]+(・[あ-ヺ°ー\\＼ꜜ]+)*/g) || [];
 
         // Dirty single katakana to hiragana conversion
         const toHiragana = (kana) => {
@@ -177,30 +158,55 @@
             const isKatakana = codePoint >= 0x30A1 && codePoint <= 0x30F6;
             return isKatakana ? String.fromCodePoint(codePoint - 0x60) : kana;
         }
-
-        [...customPitches, ...NHKPitches].filter(pitch => {
+        const parsePitch = (pitch) => {
+            const number = Number(pitch);
+            if (!isNaN(number)) return number;
             // Normalize nasal notations
             const pitchKana = pitch.replace(/([カキクケコかきくけこ])[\u309A°]/g,
                 (match, p1) => String.fromCodePoint(p1.codePointAt(0) + 0x01))
                 // Remove downsteps
                 .replace(/[・\\＼ꜜ]/g,"");
-            if (pitchKana.length !== exprKana.length) return false;
-            return Array.from(pitchKana).every((kana, index) => {
+            if (pitchKana.length !== exprKana.length) return null;
+            const matchKana = Array.from(pitchKana).every((kana, index) => {
                 const hira = toHiragana(kana);
                 const exprHira = toHiragana(exprKana[index]);
                 return hira === exprHira || hira === 'ー' && "あいうえお".includes(exprHira);
             });
-        })
-        .forEach(matchedPitches => {
-            const pitchArray = matchedPitches.split("・").map(word => {
+            if (!matchKana) return null;
+            const pitchArray = pitch.split("・").map(word => {
                 const morae = removeSmallKana(word);
                 const position = morae.search(/[\\＼ꜜ]/);
                 const moraCount = morae.replace(/[\\＼ꜜ]/g,'').length;
                 return {position: position === - 1 ? 0 : position, moraCount: moraCount};
             });
-            pitches.push(pitchArray.length === 1 ? pitchArray[0].position : pitchArray);
-        });
+            return pitchArray.length === 1 ? pitchArray[0].position : pitchArray;
+        }
 
+        const fieldText = `{{text:PitchPosition}}`;
+        // Pitch numbers not in a n+m pattern
+        const pitchNumbers = fieldText.matchAll(/(?<!\d\+)\d+(?!\+\d)/g) || [];
+        // Custom pitch strings
+        const pitchStrings = fieldText.matchAll(/[あ-ヺ°ー\\＼ꜜ]+(・[あ-ヺ°ー\\＼ꜜ]+)*/g) || [];
+        let pitches = [...pitchNumbers, ...pitchStrings]
+            .sort((a, b) => a.index - b.index)
+            .map(match => match ? parsePitch(match[0]) : null);
+
+        // Jidoujisho graphs
+        const JJGraphs = document.querySelectorAll("#pitch-tags svg");
+        JJGraphs.forEach(graph => {
+            const graphPaths = Array.from(graph.querySelectorAll("path"));
+            const downstep = graphPaths.findIndex(path => path.getAttribute("d").endsWith(",25"));
+            pitches.push(downstep === undefined ? 0 : downstep + 1);
+        });
+        // NHK dictionary pitches
+        const NHKDict = document.querySelector(
+            '#glossaries li[data-dictionary=\"NHK日本語発音アクセント新辞典\"]');
+        let NHKText = NHKDict?.innerHTML.split("<br><br>")[0];
+        if (!NHKText && !isYomitan) NHKText = document.querySelector("#glossaries").textContent;
+        const NHKPitches = NHKText?.match(/(?<=・\d+］)[あ-ヺ°ー＼]+(・[あ-ヺ°ー＼]+)+/g) || [];
+        NHKPitches.forEach(pitch => pitches.push(parsePitch(pitch)));
+
+        pitches = pitches.filter(pitch => pitch !== null);
         const pitchPosition = pitches.find(pitch => !Array.isArray(pitch));
         if (pitchPosition !== undefined) paintTargetWord(getPitchType(exprKana, pitchPosition));
         if (pitches.length > 0) constructPitch(new Set(pitches));
