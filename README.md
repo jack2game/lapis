@@ -253,13 +253,14 @@ Install and enable the [Yomitan API](https://github.com/Kuuuube/yomitan-api), th
 
 If you don't have Yomitan set up you can bulk-regenerate furigana by following the instructions in [AJT Japanese Setup](docs/anki_setup.md). Select the `Furigana Overwrite` profile, set the `Source` to `Expression` and the `Destination` to `ExpressionFurigana`. Save the profile, restart Anki, then continue the bulk-regeneration process as described in the guide. Once completed, be sure to reset `Source` to `Sentence` and `Destination` to `SentenceFurigana` for the `Furigana Overwrite` profile. One caveat with this method is that AJT might mishandle cases where two words share the same kanji but have different readings.
 
-### Specify pitch accent for compound words or expressions.
+### Specify pitch accent for compound words or expressions.
 
 You can add custom compound pitches inside the `PitchPosition` field. They must follow a format inspired by the one used by the NHK accent dictionary:
 1. Separate accent parts with a nakaten `・`
 2. Downsteps marked with backslash `＼` (two `\\` in case you're using non-japanese backslashes) or a down arrow `↓`
 3. Doesn't matter if you use hiragana or katakana
-Examples: こ＼う・いっ＼てん（紅一点）
+
+Examples: こ＼う・いって＼ん（紅一点）
 You might also want to setup the [AJT](docs/anki_setup.md) add-on to automatically add such pitch accents.
 
 **Note:** Lapis looks for the NHK accent dictionary in your cards and adds the pitches found automatically.
