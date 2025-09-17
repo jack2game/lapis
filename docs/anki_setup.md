@@ -32,6 +32,14 @@ AJT Japanese is an Anki add-on, and the version maintained by arbyste is recomme
 
    *Tip:* To easily find cards mined today, either move them to a separate deck before generating furigana or use the search term `added:1` in the search bar.
 
+3. **Setting up pitch accent (Optional)**
+   Inside the Pitch accent tab, match your settings to the following :
+
+    <div align="center">
+     <img src="../assets/pitchAJT.png">
+     <p><em>It's especially important to set the Style to `Javdejong` and the Output format to `Html and number`.</em></p>
+   </div>
+
 ### Why do you use arbyste's version?
 
 There are two main reasons:
