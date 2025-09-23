@@ -776,6 +776,7 @@ summary {
 /* Pitch overline */
 .pitch-item>span {
     position: relative;
+    white-space: nowrap;
 }
 
 .pitch-line {
