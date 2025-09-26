@@ -36,9 +36,7 @@
                     </div>
 
                     <!-- Pitch Accent -->
-                    {{#PitchPosition}}
-                    <span id="pitch-tags" class="tags"> {{PitchPosition}} </span>
-                    {{/PitchPosition}}
+                    <span id="pitch-tags" class="tags">{{PitchPosition}}</span>
                     <br />
                     <div class="audio-buttons"></div>
                 </div>
@@ -125,15 +123,6 @@
         audioContainers.forEach(audio => audio.innerHTML = `{{ExpressionAudio}}{{SentenceAudio}}`);
     }
 
-    // This code is concerned with calculating the Pitch Accent and constructing the pitch accent graphs
-    function isOdaka(pitchNumber) {
-        const kana = `{{kana:ExpressionFurigana}}` || `{{ExpressionReading}}`;
-        return (
-            kana !== null &&
-            kana.replace(/[ァィゥェォャュョヮぁぃぅぇぉゃゅょゎ]/g, "").length === pitchNumber
-        );
-    }
-
     function getPitchCategories() {
         const validTypes = "(heiban|atamadaka|nakadaka|odaka|kifuku)";
         return [...`{{PitchCategories}}`.matchAll(validTypes)].map(m => m[0]);
@@ -144,30 +133,82 @@
         return endings.some(ending => `{{text:Expression}}`.endsWith(ending));
     }
 
-    function getPitchType(pitchPosition) {
+    function getPitchType(word_kana, pitchPosition) {
+        if (pitchPosition === 0) return "heiban";
         const pitchCategories = getPitchCategories();
         const kifukuTags = ["adj-i", "v1", "v2", "v4", "v5", "vs-", "vz", "vk", "vn", "vr"];
         let canBeKifuku = pitchCategories.includes("kifuku");
         canBeKifuku ||= kifukuTags.some(tag => `{{PitchCategories}}`.includes(tag));
         if (canBeKifuku || (pitchCategories.length == 0 && hasVerbOrAdjEnding())) {
-            return pitchPosition === 0 ? "heiban" : "kifuku";
-        }
-
-        if (pitchPosition === 0) {
-            return "heiban";
+            return "kifuku";
         } else if (pitchPosition === 1) {
             return "atamadaka";
         } else if (pitchPosition > 1) {
-            return isOdaka(pitchPosition) ? "odaka" : "nakadaka";
+            return removeSmallKana(word_kana).length === pitchPosition ? "odaka" : "nakadaka";
         }
     }
 
     function handlePitches() {
-        const pitchPositions = `{{text:PitchPosition}}`.match(/^\d+|\d+\b|\d+(?=\w)/g)?.map(Number);
-        if (!pitchPositions) return;
+        const exprKana = `{{kana:ExpressionFurigana}}` || `{{ExpressionReading}}`;
+        const isYomitan = document.querySelector("#glossaries .yomitan-glossary");
 
-        paintTargetWord(getPitchType(pitchPositions[0]));
-        constructPitch(new Set(pitchPositions));
+        // Dirty single katakana to hiragana conversion
+        const toHiragana = (kana) => {
+            const codePoint = kana?.codePointAt(0)
+            const isKatakana = codePoint >= 0x30A1 && codePoint <= 0x30F6;
+            return isKatakana ? String.fromCodePoint(codePoint - 0x60) : kana;
+        }
+        const parsePitch = (pitch) => {
+            const number = Number(pitch);
+            if (!isNaN(number)) return number;
+            // Normalize nasal notations
+            const pitchKana = pitch.replace(/([カキクケコかきくけこ])[\u309A°]/g,
+                (match, p1) => String.fromCodePoint(p1.codePointAt(0) + 0x01))
+                .replace(/[・\\＼ꜜ]/g,"");
+            if (pitchKana.length !== exprKana.length) return null;
+            const matchKana = Array.from(pitchKana).every((kana, index) => {
+                const hira = toHiragana(kana);
+                const exprHira = toHiragana(exprKana[index]);
+                return hira === exprHira || hira === 'ー' && "あいうえお".includes(exprHira);
+            });
+            if (!matchKana) return null;
+            const pitchArray = pitch.split("・").map(word => {
+                const morae = removeSmallKana(word);
+                const position = morae.search(/[\\＼ꜜ]/);
+                const moraCount = morae.replace(/[\\＼ꜜ]/g,'').length;
+                return {position: position === - 1 ? 0 : position, moraCount: moraCount};
+            });
+            return pitchArray.length === 1 ? pitchArray[0].position : pitchArray;
+        }
+
+        const fieldText = `{{text:PitchPosition}}`;
+        // Pitch numbers not in a n+m pattern
+        const pitchNumbers = fieldText.matchAll(/(?<!\d\+)\d+(?!\+\d)/g) || [];
+        // Custom pitch strings
+        const pitchStrings = fieldText.matchAll(/[あ-ヺ°ー\\＼ꜜ]+(・[あ-ヺ°ー\\＼ꜜ]+)*/g) || [];
+        let pitches = [...pitchNumbers, ...pitchStrings]
+            .sort((a, b) => a.index - b.index)
+            .map(match => match ? parsePitch(match[0]) : null);
+
+        // Jidoujisho graphs
+        const JJGraphs = document.querySelectorAll("#pitch-tags svg");
+        JJGraphs.forEach(graph => {
+            const graphPaths = Array.from(graph.querySelectorAll("path"));
+            const downstep = graphPaths.findIndex(path => path.getAttribute("d").endsWith(",25"));
+            pitches.push(downstep === undefined ? 0 : downstep + 1);
+        });
+        // NHK dictionary pitches
+        const NHKDict = document.querySelector(
+            '#glossaries li[data-dictionary=\"NHK日本語発音アクセント新辞典\"]');
+        let NHKText = NHKDict?.innerHTML.split("<br><br>")[0];
+        if (!NHKText && !isYomitan) NHKText = document.querySelector("#glossaries").textContent;
+        const NHKPitches = NHKText?.match(/(?<=・\d+］)[あ-ヺ°ー＼]+(・[あ-ヺ°ー＼]+)+/g) || [];
+        NHKPitches.forEach(pitch => pitches.push(parsePitch(pitch)));
+
+        pitches = pitches.filter(pitch => pitch !== null);
+        if (pitches.length < 1) return;
+        if(!Array.isArray(pitches[0])) paintTargetWord(getPitchType(exprKana, pitches[0]));
+        constructPitch(new Set(pitches));
     }
 
     // Show the color
@@ -195,16 +236,20 @@
         tagsContainer.innerHTML = tags.map(tag =>`<div class="tags">${tag}</div>`).join('');
     }
 
+    // Useful to determine morae count
+    function removeSmallKana(kana) {
+        return kana.replace(/[ァィゥェォャュョヮぁぃぅぇぉゃゅょゎ\u3099\u309A°]/g, "");
+    }
+
     function groupMoras(kana) {
-        let currentChar = "";
-        let nextChar = "";
+        let currentChar = "", nextChar = "";
         const groupedMoras = [];
-        const check = ["ァ", "ィ", "ゥ", "ェ", "ォ", "ャ", "ュ", "ョ", "ヮ", "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "ゎ"];
+        const smallKana = new Set("ァィゥェォャュョヮぁぃぅぇぉゃゅょゎ\u3099\u309A°");
 
         for (let i = 0; i < kana.length; i++) {
             currentChar = kana[i];
             nextChar = i < kana.length - 1 && kana[i + 1];
-            if (check.includes(nextChar)) {
+            if (smallKana.has(nextChar)) {
                 groupedMoras.push(currentChar + nextChar);
                 i += 1;
             } else {
@@ -214,60 +259,9 @@
         return groupedMoras;
     }
 
-    function getPitchPattern(pitchPosition) {
-        // 0 = low
-        // 1 = high
-        // 2 = high to low
-
+    function constructPitch(pitchPatterns) {
         const kana = `{{kana:ExpressionFurigana}}` || `{{ExpressionReading}}`;
-        const moras = groupMoras(kana);
-        let pattern = [];
-
-        if (pitchPosition === 0) {
-            // 平板
-            pattern = [
-                ...Array(moras[0].length).fill("0"),
-                ...Array(kana.length - moras[0].length).fill("1"),
-            ];
-        } else if (pitchPosition === 1) {
-            // 頭高
-            pattern = [
-                ...(moras[0].length === 2 ? ["1", "2"] : ["2"]),
-                ...Array(kana.length - moras[0].length).fill("0"),
-            ];
-        } else if (pitchPosition > 1) {
-            if (isOdaka(pitchPosition)) {
-                // 尾高
-                pattern = [
-                    ...Array(moras[0].length).fill("0"),
-                    ...Array(kana.length - moras[0].length - 1).fill("1"),
-                    "2",
-                ];
-            } else {
-                // 中高
-                let afterDrop = false;
-                for (let i = 0; i < moras.length; i++) {
-                    if (i === 0) {
-                        pattern = Array(moras[0].length).fill("0");
-                    } else if (i + 1 === pitchPosition) {
-                        pattern =
-                            moras[i].length === 2
-                                ? [...pattern, "1", "2"]
-                                : [...pattern, "2"];
-                        afterDrop = true;
-                    } else if (afterDrop) {
-                        pattern = [...pattern, ...Array(moras[i].length).fill("0")];
-                    } else {
-                        pattern = [...pattern, ...Array(moras[i].length).fill("1")];
-                    }
-                }
-            }
-        }
-        return pattern;
-    }
-
-    function constructPitch(pitchPositions) {
-        const kana = `{{kana:ExpressionFurigana}}` || `{{ExpressionReading}}`;
+        const morae = groupMoras(kana);
         const pitch = document.querySelector(".pitch");
         const pitchTags = document.querySelector("#pitch-tags");
 
@@ -289,32 +283,42 @@
 
         pitch.innerHTML = "";
         pitchTags.innerHTML = "";
-        pitchTags.style.display = "inline-block";
         const pitchList = document.createElement("ul");
         const pitchTagList = document.createElement("ul");
 
-        for (let pitchPosition of pitchPositions) {
+        for (let pitchPattern of pitchPatterns) {
             const pitchTag = document.createElement("li");
-            pitchTag.textContent = pitchPosition;
-
-            const pattern = getPitchPattern(pitchPosition);
-
             const pitchItem = document.createElement("li");
             pitchItem.classList.add("pitch-item");
-            pitchItem.classList.add(getPitchType(pitchPosition));
 
-            for (let i = 0; i < kana.length; i++) {
-                if (pattern[i] === "0")
-                    pitchItem.appendChild(createPitchSpan("pitch-low", kana[i]));
-                else if (pattern[i] === "1")
-                    pitchItem.appendChild(createPitchSpan("pitch-high", kana[i]));
-                else if (pattern[i] === "2")
-                    pitchItem.appendChild(createPitchSpan("pitch-to-drop", kana[i]));
-                else
-                    console.error(
-                        "pattern[i] found undefined value. pattern is",
-                        pattern,
-                    );
+            const isCompound = Array.isArray(pitchPattern);
+            if(isCompound) {
+                // Filters duplicates
+                const tag = pitchPattern.map(({position}) => position).join(",");
+                if([...pitchTagList.children].some(pitchTag => pitchTag.innerText === tag)) continue;
+                pitchTag.innerText = tag;
+            } else {
+                pitchItem.classList.add(getPitchType(kana, pitchPattern));
+                pitchTag.innerText = pitchPattern;
+                pitchPattern = [{position: pitchPattern, moraCount: morae.length}];
+            }
+
+            let offset = 0;
+            for (const {position, moraCount} of pitchPattern) {
+                for (let i = 0; i < moraCount; i++) {
+                    let moraPitch = "";
+                    if (position <= 0) {
+                        moraPitch = i === 0 ? "pitch-low" : "pitch-high";
+                    } else if (position === 1) {
+                        moraPitch = i === 0 ? "pitch-to-drop" : "pitch-low";
+                    } else {
+                        moraPitch = i === position - 1 ? "pitch-to-drop" :
+                            i === 0 || i >= position ? "pitch-low" : "pitch-high";
+                    }
+                    if (offset + i >= morae.length) continue;
+                    pitchItem.appendChild(createPitchSpan(moraPitch, morae[offset + i]));
+                }
+                offset += moraCount;
             }
             pitchTagList.appendChild(pitchTag);
             pitchList.appendChild(pitchItem);
