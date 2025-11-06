@@ -28,8 +28,8 @@
   --mobile-info-font-size: 16px;
 
   /* Miscellaneous */
-  --font-serif: "Hiragino Mincho ProN", "Noto Serif CJK JP", "Yu Mincho", HanaMinA, HanaMinB, serif;
-  --font-sans: "Inter", "SF Pro Display", "Liberation Sans", "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", "Meiryo", HanaMinA, HanaMinB, sans-serif;
+  --font-serif: "Hiragino Mincho ProN", "Noto Serif CJK JP", "Noto Serif JP", "Yu Mincho", HanaMinA, HanaMinB, serif;
+  --font-sans: "Inter", "SF Pro Display", "Liberation Sans", "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", "Noto Sans JP", "Meiryo", HanaMinA, HanaMinB, sans-serif;
   --light-mode-image-brightness: 85%;
   --dark-mode-image-brightness: 80%;
   --light-mode-tooltip-hover-color: rgb(256, 256, 256, 0.9);
@@ -1145,7 +1145,7 @@ html.mobile .sentence, html:not(.mobile) .sentence-alt,
 #lapis[data-jitendex-format~="no-forms"] .definition [data-sc-content="forms"],
 #lapis[data-jitendex-format~="no-xref"] .definition [data-sc-content|="xref"],
 #lapis[data-jitendex-format~="no-img"] .definition [data-sc-content|="graphic"] {
-  display: none; 
+  display: none;
 }
 
 #lapis[data-jitendex-format~="minimal"] .definition,
