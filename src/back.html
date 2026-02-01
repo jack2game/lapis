@@ -602,7 +602,7 @@ countdown("s2", 0, 4 );//2nd value is the minute, 3rd is the seconds
         ];
         for (const opt of options) {
             let value = styles.getPropertyValue(opt);
-            value = value.replace(/^['"]|['"]$/g,"").trim().toLowerCase();
+            value = value.trim().replace(/^['"]|['"]$/g,"").toLowerCase();
             lapis.setAttribute("data-" + opt.slice(2), value);
             if (opt === "--open-misc-info" && value === "on" && miscInfo) {
                 miscInfo.open = true;
